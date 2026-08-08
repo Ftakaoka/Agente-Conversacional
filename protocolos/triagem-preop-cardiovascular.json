@@ -1,0 +1,407 @@
+{
+  "meta": {
+    "nome": "Protocolo consolidado de triagem pré-operatória — Vera PreOp.AI",
+    "versao": "0.1.0",
+    "idioma": "pt-BR",
+    "contexto_clinico": {
+      "populacao": "Pacientes adultos (≥18 anos)",
+      "cirurgia": "Eletiva, não cardíaca",
+      "momento_da_jornada": "Indicação/contemplação (antes do agendamento)",
+      "fora_de_escopo": ["Cirurgia de emergência ou urgência", "Cirurgia cardíaca", "Pacientes pediátricos", "Gestantes em cirurgia obstétrica"]
+    },
+    "fontes": [
+      {
+        "id": "ESC2022",
+        "titulo": "2022 ESC Guidelines on cardiovascular assessment and management of patients undergoing non-cardiac surgery",
+        "papel": "Espinha dorsal do algoritmo: gates de idade/fatores de risco, classificação de risco cirúrgico, biomarcadores, vigilância de MINS"
+      },
+      {
+        "id": "ACCAHA2024",
+        "titulo": "2024 AHA/ACC Guideline for Perioperative Cardiovascular Management for Noncardiac Surgery",
+        "papel": "Enxertos: triagem de fragilidade, nó 'o teste muda a conduta?', escore de refinamento (RCRI), nó de alternativas não cirúrgicas"
+      },
+      {
+        "id": "ASAPS",
+        "titulo": "ASA Physical Status Classification System (American Society of Anesthesiologists, versão vigente com exemplos aprovados)",
+        "papel": "Classificador do estado físico do paciente; entrada da matriz de exames"
+      },
+      {
+        "id": "NICENG45",
+        "titulo": "NICE NG45 — Routine preoperative tests for elective surgery",
+        "papel": "Matriz determinística de exames pré-operatórios: porte cirúrgico × classe ASA"
+      }
+    ],
+    "avisos": [
+      "A classe ASA-PS gerada pela triagem é PROVISÓRIA; a atribuição final é do anestesiologista no dia da anestesia.",
+      "A classe ASA isolada não prediz risco operatório; só tem sentido combinada ao porte da cirurgia.",
+      "Este protocolo é apoio à decisão. Não substitui julgamento clínico nem consulta pré-anestésica.",
+      "Sinalizadores de instabilidade (nó N1) suspendem o fluxo eletivo e exigem encaminhamento médico imediato."
+    ]
+  },
+
+  "classificador_asa_ps": {
+    "descricao": "Procedimento sequencial para atribuir classe ASA-PS provisória a partir de anamnese. Avaliar os passos em ordem; a primeira condição satisfeita define a classe.",
+    "variaveis_de_entrada": [
+      { "id": "doencas_diagnosticadas", "tipo": "lista", "descricao": "Doenças sistêmicas diagnosticadas e grau de controle (bem/mal controlada)" },
+      { "id": "limitacao_funcional_substantiva", "tipo": "booleano", "descricao": "Doença causa limitação substantiva das atividades" },
+      { "id": "tabagismo_atual", "tipo": "booleano" },
+      { "id": "padrao_alcool", "tipo": "enum", "valores": ["ausente_minimo", "social", "dependencia"] },
+      { "id": "imc", "tipo": "numero" },
+      { "id": "gestacao", "tipo": "booleano" },
+      { "id": "evento_cv_recente", "tipo": "objeto", "descricao": "IAM, AVC, AIT ou stent coronariano: presença e tempo decorrido em meses" },
+      { "id": "dialise", "tipo": "enum", "valores": ["nao", "regular", "irregular_ou_indicada_nao_realizada"] },
+      { "id": "dispositivo_cardiaco", "tipo": "booleano", "descricao": "Marca-passo ou similar" },
+      { "id": "fracao_ejecao_reduzida", "tipo": "enum", "valores": ["nao", "moderada", "grave"] }
+    ],
+    "passos": [
+      {
+        "ordem": 1,
+        "id": "excluir_extremos",
+        "regra": "Paciente moribundo sem expectativa de sobrevida sem a cirurgia → ASA V. Morte encefálica para doação de órgãos → ASA VI.",
+        "nota": "Não ocorrem em fluxo eletivo de contemplação; presentes por completude."
+      },
+      {
+        "ordem": 2,
+        "id": "asa_4",
+        "regra": "Doença grave que é ameaça constante à vida → ASA IV.",
+        "criterios": [
+          "IAM, AVC, AIT ou stent coronariano há MENOS de 3 meses",
+          "Isquemia cardíaca em curso",
+          "Disfunção valvar grave",
+          "Redução grave da fração de ejeção",
+          "Sepse",
+          "CIVD",
+          "Doença renal terminal SEM diálise regular"
+        ],
+        "acao_no_fluxo": "Dispara sinalizador de instabilidade — coincide com o nó N1 do algoritmo híbrido: suspender indicação eletiva e otimizar."
+      },
+      {
+        "ordem": 3,
+        "id": "asa_3",
+        "regra": "Doença sistêmica grave, com limitação funcional substantiva, ou uma ou mais doenças moderadas a graves → ASA III.",
+        "criterios": [
+          "Diabetes ou hipertensão MAL controlados",
+          "DPOC",
+          "IMC ≥ 40",
+          "Hepatite ativa",
+          "Dependência ou abuso de álcool",
+          "Marca-passo implantado",
+          "Redução moderada da fração de ejeção",
+          "Doença renal terminal EM diálise regular",
+          "IAM, AVC, AIT ou stent coronariano há MAIS de 3 meses"
+        ]
+      },
+      {
+        "ordem": 4,
+        "id": "asa_2",
+        "regra": "Doença sistêmica leve, sem limitação funcional substantiva → ASA II.",
+        "criterios": [
+          "Tabagista atual",
+          "Etilismo social",
+          "Gestação",
+          "Obesidade (30 ≤ IMC < 40)",
+          "Diabetes ou hipertensão BEM controlados",
+          "Doença pulmonar leve"
+        ]
+      },
+      {
+        "ordem": 5,
+        "id": "asa_1",
+        "regra": "Nenhuma doença sistêmica; saudável, não tabagista, álcool mínimo ou ausente → ASA I."
+      },
+      {
+        "ordem": 6,
+        "id": "modificador_e",
+        "regra": "Acrescentar sufixo 'E' apenas em cirurgia de emergência.",
+        "nota": "Por definição, nunca se aplica ao fluxo eletivo deste protocolo."
+      }
+    ],
+    "saida": { "id": "asa_ps_provisoria", "tipo": "enum", "valores": ["I", "II", "III", "IV", "V", "VI"] }
+  },
+
+  "porte_cirurgico": {
+    "descricao": "Classificação do risco do procedimento proposto. Lookup determinístico por nome/código da cirurgia, sem julgamento caso a caso.",
+    "escala_esc2022": {
+      "baixo": { "risco_morte_cv_iam_30d": "<1%" },
+      "intermediario": { "risco_morte_cv_iam_30d": "1–5%" },
+      "alto": { "risco_morte_cv_iam_30d": ">5%" }
+    },
+    "escala_nice": ["menor", "intermediario", "maior_complexo"],
+    "mapeamento_esc_para_nice": {
+      "baixo": "menor",
+      "intermediario": "intermediario",
+      "alto": "maior_complexo"
+    },
+    "saida": { "id": "porte", "tipo": "enum", "valores": ["baixo", "intermediario", "alto"] }
+  },
+
+  "matriz_exames_nice": {
+    "descricao": "Matriz NICE NG45: exames de rotina por porte cirúrgico × classe ASA. Entrada: saídas de 'classificador_asa_ps' e 'porte_cirurgico'. É o nó ACC/AHA 'o teste muda a conduta?' pré-respondido para cada célula.",
+    "legenda": {
+      "sim": "Oferecer de rotina",
+      "considerar": "Oferecer apenas se a condição associada for verdadeira",
+      "nao": "Não pedir de rotina"
+    },
+    "exames_por_porte_e_asa": [
+      {
+        "exame": "hemograma_completo",
+        "regras": [
+          { "porte": "baixo", "asa": ["I", "II", "III", "IV"], "recomendacao": "nao" },
+          { "porte": "intermediario", "asa": ["I", "II"], "recomendacao": "nao" },
+          { "porte": "intermediario", "asa": ["III", "IV"], "recomendacao": "considerar", "condicao": "Doença cardiovascular ou renal, sem resultado recente disponível" },
+          { "porte": "alto", "asa": ["I", "II", "III", "IV"], "recomendacao": "sim" }
+        ]
+      },
+      {
+        "exame": "funcao_renal_creatinina_eletrolitos",
+        "regras": [
+          { "porte": "baixo", "asa": ["I", "II"], "recomendacao": "nao" },
+          { "porte": "baixo", "asa": ["III", "IV"], "recomendacao": "considerar", "condicao": "Risco de lesão renal aguda" },
+          { "porte": "intermediario", "asa": ["I", "II"], "recomendacao": "nao" },
+          { "porte": "intermediario", "asa": ["III", "IV"], "recomendacao": "sim" },
+          { "porte": "alto", "asa": ["I", "II"], "recomendacao": "considerar", "condicao": "Risco de lesão renal aguda" },
+          { "porte": "alto", "asa": ["III", "IV"], "recomendacao": "sim" }
+        ]
+      },
+      {
+        "exame": "ecg_repouso",
+        "regras": [
+          { "porte": "baixo", "asa": ["I", "II"], "recomendacao": "nao" },
+          { "porte": "baixo", "asa": ["III", "IV"], "recomendacao": "considerar", "condicao": "Sem ECG nos últimos 12 meses" },
+          { "porte": "intermediario", "asa": ["I", "II"], "recomendacao": "considerar", "condicao": "Doença cardiovascular, renal ou diabetes" },
+          { "porte": "intermediario", "asa": ["III", "IV"], "recomendacao": "sim" },
+          { "porte": "alto", "asa": ["I", "II"], "recomendacao": "considerar", "condicao": "Idade > 65 anos e sem ECG nos últimos 12 meses" },
+          { "porte": "alto", "asa": ["III", "IV"], "recomendacao": "sim" }
+        ]
+      },
+      {
+        "exame": "coagulograma_hemostasia",
+        "regras": [
+          { "porte": "baixo", "asa": ["I", "II", "III", "IV"], "recomendacao": "nao" },
+          { "porte": "intermediario", "asa": ["I", "II"], "recomendacao": "nao" },
+          { "porte": "intermediario", "asa": ["III", "IV"], "recomendacao": "considerar", "condicao": "Doença hepática crônica" },
+          { "porte": "alto", "asa": ["I", "II"], "recomendacao": "nao" },
+          { "porte": "alto", "asa": ["III", "IV"], "recomendacao": "considerar", "condicao": "Doença hepática crônica" }
+        ],
+        "nota": "Paciente em uso de anticoagulante segue via específica local (INR conforme protocolo), fora desta matriz."
+      }
+    ],
+    "exames_independentes_de_porte_e_asa": [
+      { "exame": "radiografia_torax", "recomendacao": "nao", "nota": "Não pedir de rotina para ninguém, em nenhum porte ou classe." },
+      {
+        "exame": "ecocardiograma_repouso",
+        "recomendacao": "considerar",
+        "condicao": "Sopro cardíaco ACOMPANHADO de sintoma cardíaco (dispneia, síncope, pré-síncope, dor torácica) OU sinais/sintomas de insuficiência cardíaca",
+        "nota": "Fazer ECG de repouso antes e discutir com o anestesiologista."
+      },
+      {
+        "exame": "funcao_pulmonar_ou_gasometria",
+        "recomendacao": "considerar",
+        "condicao": "ASA III–IV com doença respiratória conhecida ou suspeita, após parecer de anestesiologista sênior"
+      },
+      { "exame": "polissonografia", "recomendacao": "nao" },
+      {
+        "exame": "urina_eas",
+        "recomendacao": "considerar",
+        "condicao": "Urocultura apenas se a presença de infecção urinária mudaria a conduta cirúrgica"
+      },
+      {
+        "exame": "hba1c",
+        "recomendacao": "condicional",
+        "regras": [
+          { "condicao": "Diabetes diagnosticado E sem HbA1c nos últimos 3 meses", "recomendacao": "sim" },
+          { "condicao": "Sem diagnóstico de diabetes", "recomendacao": "nao" }
+        ]
+      },
+      {
+        "exame": "teste_gravidez",
+        "recomendacao": "condicional",
+        "regras": [
+          { "condicao": "Mulher em idade fértil: perguntar sempre sobre possibilidade de gestação", "recomendacao": "perguntar" },
+          { "condicao": "Qualquer dúvida sobre gestação", "recomendacao": "oferecer_com_consentimento" }
+        ]
+      },
+      { "exame": "eletroforese_falciforme", "recomendacao": "nao", "nota": "Não pedir como triagem pré-operatória de rotina." }
+    ]
+  },
+
+  "algoritmo_hibrido": {
+    "descricao": "Espinha dorsal ESC 2022 com enxertos ACC/AHA 2024. Nós N0–N5 são cobertos integralmente por anamnese (zero exames); exames só aparecem de N6 em diante, sempre condicionados a N8.",
+    "nos": [
+      {
+        "id": "N0",
+        "titulo": "Confirmar contexto",
+        "origem": "protocolo_local",
+        "tipo": "gate",
+        "condicao": "Adulto E cirurgia eletiva não cardíaca E momento de indicação/contemplação",
+        "se_verdadeiro": "N1",
+        "se_falso": { "saida": "fora_de_escopo", "acao": "Encaminhar para fluxo apropriado (emergência/urgência tem caminho próprio)" }
+      },
+      {
+        "id": "N1",
+        "titulo": "Condição cardíaca instável?",
+        "origem": "ESC2022",
+        "tipo": "gate",
+        "criterios": [
+          "Síndrome coronariana aguda recente",
+          "Insuficiência cardíaca descompensada",
+          "Arritmia grave",
+          "Valvopatia grave sintomática"
+        ],
+        "nota": "Equivale a ASA IV no classificador; detectável por anamnese dirigida + sintomas.",
+        "se_verdadeiro": { "saida": "suspender_indicacao", "acao": "Suspender fluxo eletivo; encaminhar para tratamento/otimização; reavaliar após resolução" },
+        "se_falso": "N2"
+      },
+      {
+        "id": "N2",
+        "titulo": "Classificar risco do procedimento",
+        "origem": "ESC2022",
+        "tipo": "processamento",
+        "acao": "Aplicar modulo 'porte_cirurgico' (lookup pela tabela ESC)",
+        "saida_intermediaria": "porte",
+        "proximo": "N2b"
+      },
+      {
+        "id": "N2b",
+        "titulo": "Classificar ASA-PS provisória",
+        "origem": "ASAPS",
+        "tipo": "processamento",
+        "acao": "Aplicar modulo 'classificador_asa_ps' sobre a anamnese",
+        "saida_intermediaria": "asa_ps_provisoria",
+        "proximo": "N3"
+      },
+      {
+        "id": "N3",
+        "titulo": "Gate do paciente",
+        "origem": "ESC2022",
+        "tipo": "gate",
+        "condicao": "Idade < 65 E sem fatores de risco cardiovascular ou doença CV estabelecida E porte em [baixo, intermediario]",
+        "excecao": "Idade ≥ 45 E porte alto → considerar ECG + biomarcadores mesmo sem fatores de risco (exclusividade ESC)",
+        "se_verdadeiro": { "saida": "liberar_sem_exames_cv", "acao": "Prosseguir para N5 (capacidade funcional) e depois direto a N11; aplicar matriz NICE apenas para exames não cardiovasculares" },
+        "se_falso": "N4",
+        "nota": "Passo que despressuriza a fila: a maioria dos elegíveis resolve o caminho aqui."
+      },
+      {
+        "id": "N4",
+        "titulo": "Triagem de fragilidade",
+        "origem": "ACCAHA2024",
+        "tipo": "processamento",
+        "condicao_de_disparo": "Idade ≥ 65 anos",
+        "acao": "Aplicar instrumento breve (ex.: FRAIL, Clinical Frailty Scale) na mesma conversa do gate etário",
+        "saida_intermediaria": "fragilidade",
+        "desvio": { "se": "fragilidade avançada", "entao": "N10" },
+        "proximo": "N5"
+      },
+      {
+        "id": "N5",
+        "titulo": "Capacidade funcional",
+        "origem": "ESC2022_ACCAHA2024_convergentes",
+        "tipo": "processamento",
+        "acao": "DASI estruturado ou proxy conversacional de METs (módulo met-proxy-assessor); corte em 4 METs",
+        "regras": [
+          { "se": "≥ 4 METs", "entao": "Sem testes funcionais adicionais; seguir N6" },
+          { "se": "< 4 METs ou indeterminado E há janela de tempo", "entao": "Sinalizar PRÉ-HABILITAÇÃO antes de agendar; seguir N6" }
+        ],
+        "proximo": "N6"
+      },
+      {
+        "id": "N6",
+        "titulo": "Exames de entrada do braço de risco",
+        "origem": "ESC2022_NICENG45",
+        "tipo": "processamento",
+        "condicao_de_disparo": "Idade ≥ 65 OU fatores de risco/doença CV, com porte intermediário ou alto",
+        "acao": "ECG + NT-proBNP/BNP (gate ESC) + matriz 'matriz_exames_nice' (porte × ASA) para os demais exames; hs-cTn basal SE vigilância de MINS adotada (ver conflitos_resolvidos)",
+        "nota": "Pacote pedido uma única vez na indicação — evita idas e vindas.",
+        "proximo": "N7"
+      },
+      {
+        "id": "N7",
+        "titulo": "Refinamento por escore",
+        "origem": "ACCAHA2024",
+        "tipo": "processamento",
+        "condicao_de_disparo": "Caso intermediário ou duvidoso após N6",
+        "acao": "Calcular RCRI (alternativa: AUB-HAS2) com variáveis já coletadas na anamnese; usar como desempate, não como substituto do gate ESC",
+        "proximo": "N8"
+      },
+      {
+        "id": "N8",
+        "titulo": "O teste muda a conduta?",
+        "origem": "ACCAHA2024",
+        "tipo": "gate",
+        "condicao": "Para QUALQUER exame além do pacote de entrada (eco, teste de estresse): o resultado alteraria a decisão de operar/adiar/otimizar?",
+        "se_verdadeiro": "N9",
+        "se_falso": { "acao": "Não pedir o exame; seguir N11" },
+        "nota": "Freio formal da cascata de exames."
+      },
+      {
+        "id": "N9",
+        "titulo": "Imagem de estresse",
+        "origem": "ESC2022_restringido_por_N8",
+        "tipo": "processamento",
+        "condicao_de_disparo": "Porte alto E capacidade funcional ruim E alta probabilidade de DAC E N8 respondido 'sim'",
+        "acao": "Solicitar imagem de estresse antes do agendamento",
+        "proximo": "N11"
+      },
+      {
+        "id": "N10",
+        "titulo": "Alternativas não cirúrgicas",
+        "origem": "ACCAHA2024",
+        "tipo": "processamento",
+        "condicao_de_disparo": "Risco proibitivo OU fragilidade avançada",
+        "acao": "Conversa estruturada sobre alternativas não cirúrgicas, manejo conservador ou cuidados paliativos, ANTES do agendamento",
+        "proximo": "N11",
+        "nota": "Só existe janela real para esta conversa na contemplação."
+      },
+      {
+        "id": "N11",
+        "titulo": "Decisão compartilhada e plano",
+        "origem": "ESC2022_ACCAHA2024_convergentes",
+        "tipo": "saida",
+        "acao": "Consolidar decisão: operar / otimizar e reavaliar / reconsiderar indicação",
+        "itens_do_plano_se_operar": [
+          "Classe ASA-PS provisória registrada (final é do anestesiologista)",
+          "Lista de exames gerada pela matriz NICE",
+          "Vigilância de MINS (hs-cTn 24/48h pós-op) registrada como item de plano para pacientes de risco, se adotada",
+          "Pré-habilitação, se sinalizada em N5",
+          "Encaminhamento à consulta pré-anestésica"
+        ]
+      }
+    ],
+    "sinalizadores": [
+      { "id": "instabilidade_cardiaca", "gerado_em": "N1", "acao": "Suspende fluxo; encaminhamento imediato" },
+      { "id": "asa_iv_provisorio", "gerado_em": "N2b", "acao": "Equivale a instabilidade; tratar como N1 verdadeiro" },
+      { "id": "fragilidade_avancada", "gerado_em": "N4", "acao": "Desvio para N10" },
+      { "id": "pre_habilitacao", "gerado_em": "N5", "acao": "Item de plano; janela de tempo da contemplação" },
+      { "id": "risco_proibitivo", "gerado_em": "N7", "acao": "Desvio para N10" }
+    ]
+  },
+
+  "conflitos_resolvidos": [
+    {
+      "tema": "Troponina de vigilância (MINS)",
+      "esc2022": "Classe I: hs-cTn antes e 24/48h após cirurgia intermediária/alta em paciente de risco",
+      "accaha2024": "Classe 2b: benefício incerto em assintomáticos",
+      "decisao_hibrido": "Adotar posição ESC como decisão de PLANEJAMENTO em N11 (execução é pós-operatória); hs-cTn basal entra no pacote N6",
+      "parametrizavel": true,
+      "chave_config": "vigilancia_mins_ativa"
+    },
+    {
+      "tema": "Imagem de estresse pré-operatória",
+      "esc2022": "Classe I para cirurgia eletiva de alto risco com capacidade funcional ruim e alta probabilidade de DAC",
+      "accaha2024": "Classe 2b ('pode ser considerado')",
+      "decisao_hibrido": "Manter indicação ESC subordinada ao nó N8 (ACC/AHA 'muda a conduta?') — força europeia com disciplina de pedido americana"
+    },
+    {
+      "tema": "Idade como gatilho autônomo",
+      "esc2022": "≥ 65 anos dispara avaliação (ECG + biomarcadores) para porte intermediário/alto",
+      "accaha2024": "Idade isolada não dispara nada; apenas risco calculado",
+      "decisao_hibrido": "Adotar gate etário ESC em N3 (operacionalizável por anamnese pura no primeiro contato); escore ACC/AHA entra como refinamento em N7"
+    }
+  ],
+
+  "exclusoes_deliberadas": [
+    { "item": "CPET (teste cardiopulmonar de exercício)", "fonte": "ACCAHA2024", "motivo": "Indisponível na prática do SUS; DASI/proxy de METs cumpre a função" },
+    { "item": "NSQIP-MICA como calculadora primária", "fonte": "ACCAHA2024", "motivo": "Exige dados operacionais inexistentes no momento da contemplação; RCRI/AUB-HAS2 bastam" },
+    { "item": "Revascularização pré-operatória de rotina", "fonte": "ambas", "motivo": "Descartada pelos dois algoritmos; só como exceção via N1" }
+  ]
+}
