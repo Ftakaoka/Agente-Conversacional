@@ -1,5 +1,7 @@
 # Protocolos de triagem — Vera PreOp.AI
 
+> Motor executável destes protocolos: pacote [`motor_triagem/`](../motor_triagem/) (ver README na raiz).
+
 ## `triagem-preop-cardiovascular.json`
 
 Protocolo consolidado de triagem pré-operatória cardiovascular para **pacientes adultos em cirurgia eletiva não cardíaca, no momento de indicação/contemplação** (antes do agendamento).
