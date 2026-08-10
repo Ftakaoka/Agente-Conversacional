@@ -1,0 +1,135 @@
+subject	predicate	object	evidence_type	certainty	certainty_source	effect	context	polarity	qualifier	source	unverified_at_source
+INT:txa	INDICATED_FOR	IND:reduce_perioperative_blood_loss	GUIDELINE	high	guideline_rated			positive		GL:aahks_aaos_asra_hip_knee_txa_2018;GL:eacts_eactaic_pbm_cardiac_2024	false
+INT:txa	INDICATED_FOR	IND:treatment_of_pph	GUIDELINE	moderate	guideline_rated			positive	strong recommendation; in addition to standard care	GL:who_txa_pph_2017;GL:who_pph_consolidated_2025	false
+INT:txa	INDICATED_FOR	PROC:cardiac_surgery_cpb	TRIAL	high				positive		TRIAL:atacas	false
+INT:txa	INDICATED_FOR	PROC:tka	GUIDELINE	high	guideline_rated			positive		GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	INDICATED_FOR	PROC:tha	GUIDELINE	high	guideline_rated			positive		GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	INDICATED_FOR	PROC:spine_fusion_multilevel	META	moderate	synthesis_appraisal			positive		META:spine_nma	false
+INT:txa	INDICATED_FOR	PROC:noncardiac_surgery_mixed	TRIAL	moderate	synthesis_appraisal			positive	with disclosed residual cardiovascular uncertainty	TRIAL:poise3	false
+INT:txa	INDICATED_FOR	POP:postpartum_woman_clinically_diagnosed_pph	GUIDELINE	moderate	guideline_rated			positive		GL:who_pph_consolidated_2025	false
+INT:txa	ADMINISTERED_BY	ROUTE:iv	TRIAL	high				positive	default and best-evidenced route in every specialty studied	TRIAL:poise3;TRIAL:atacas;TRIAL:woman	false
+INT:txa	ADMINISTERED_BY	ROUTE:topical	GUIDELINE	high	guideline_rated			positive	equivalent to IV in primary TKA/THA only	GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	ADMINISTERED_BY	ROUTE:oral	GUIDELINE	moderate	guideline_rated			positive	equivalent to IV/topical in primary TKA/THA; requires pre-incision lead time	GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	ADMINISTERED_BY	ROUTE:combined_iv_topical	META	low	synthesis_appraisal			positive	open thoracolumbar fusion	META:spine_nma	false
+ROUTE:topical	COMPARED_WITH	COMP:iv_txa	TRIAL	moderate		EFFECT:topical_inferior_cardiac | Topical inferior to IV for bleeding/transfusion; no reduction in seizure; trial stopped early		positive	open cardiac surgery — topical INFERIOR; do not generalise arthroplasty equivalence	TRIAL:deposition	false
+ROUTE:topical	COMPARED_WITH	COMP:iv_txa	GUIDELINE	high	guideline_rated			positive	primary TKA/THA — EQUIVALENT	GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	DOSED_AS	DOSE:txa_1g_iv_x2_perioperative	TRIAL	moderate			PROC:noncardiac_surgery_mixed	positive		TRIAL:poise3	false
+INT:txa	DOSED_AS	DOSE:txa_high_dose_cardiac	TRIAL	moderate			PROC:cardiac_surgery_cpb	positive		TRIAL:optimal	false
+INT:txa	DOSED_AS	DOSE:txa_low_dose_cardiac	TRIAL	moderate			PROC:cardiac_surgery_cpb	positive		TRIAL:optimal	false
+INT:txa	DOSED_AS	DOSE:txa_arthroplasty_iv	GUIDELINE	high	guideline_rated			positive	no specific dose, regimen or number of doses shown superior	GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	DOSED_AS	DOSE:txa_arthroplasty_topical	GUIDELINE	high	guideline_rated			positive		GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	DOSED_AS	DOSE:txa_spine_high	META	low	synthesis_appraisal			positive	highest-ranked in NMA; sparse direct comparisons	META:spine_nma	false
+INT:txa	DOSED_AS	DOSE:txa_1g_iv_pph	GUIDELINE	moderate	guideline_rated			positive	1 g over 10 minutes; rapid injection risks hypotension	GL:who_txa_pph_2017;GL:who_pph_consolidated_2025	false
+DOSE:txa_arthroplasty_iv	TIMED_AT	TIME:pre_incision	GUIDELINE	moderate	guideline_rated			positive	pre-incision preferred over post-incision	GL:aahks_aaos_asra_hip_knee_txa_2018	false
+DOSE:txa_1g_iv_x2_perioperative	TIMED_AT	TIME:pre_incision	TRIAL	moderate				positive		TRIAL:poise3	false
+DOSE:txa_1g_iv_x2_perioperative	TIMED_AT	TIME:end_of_surgery	TRIAL	moderate				positive	second 1 g dose	TRIAL:poise3	false
+DOSE:txa_1g_iv_pph	TIMED_AT	TIME:within_3h_of_birth	GUIDELINE	moderate	guideline_rated	EFFECT:rr_0_69_within_3h | RR 0.69 (95% CI 0.52-0.91) when given within 3 h of birth		positive		GL:who_txa_pph_2017;GL:who_pph_consolidated_2025	false
+DOSE:txa_1g_iv_pph	TIMED_AT	TIME:repeat_at_30min_or_restart_24h	GUIDELINE	moderate	guideline_rated			positive	second 1 g IV dose	GL:who_txa_pph_2017	false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	OUT:death_due_to_bleeding	TRIAL	low			TIME:beyond_3h_of_birth	positive	no benefit demonstrated when given more than 3 h after birth	TRIAL:woman	false
+INT:txa	COMPARED_WITH	COMP:placebo	TRIAL	high				positive		TRIAL:poise3;TRIAL:atacas;TRIAL:helix;TRIAL:woman;TRIAL:woman2	false
+DOSE:txa_high_dose_cardiac	COMPARED_WITH	COMP:low_dose_txa	TRIAL	moderate		EFFECT:rd_minus_4_1pp_transfusion | 21.8% vs 26.0%; risk difference -4.1 pp (95% CI -7.2 to -1.1)		positive		TRIAL:optimal	false
+DOSE:txa_1g_iv_prophylaxis_obstetric	COMPARED_WITH	COMP:standard_care_uterotonic	TRIAL	moderate				positive		TRIAL:traap;TRIAL:traap2;TRIAL:nichd_mfmu_txa_cesarean	false
+INT:txa	REDUCES	OUT:life_threatening_bleeding	TRIAL	moderate	synthesis_appraisal	EFFECT:hr_0_76_ci_0_67_0_87 | HR 0.76 (95% CI 0.67-0.87); 9.1% vs 11.7%; ARR ~2.6 pp; NNT ~38	PROC:noncardiac_surgery_mixed	positive		TRIAL:poise3	false
+INT:txa	REDUCES	OUT:blood_product_administration	TRIAL	high		EFFECT:arr_16_8pp_blood_products | 37.9% vs 54.7%; ARR 16.8 pp (p<0.001)	PROC:cabg	positive		TRIAL:atacas	false
+INT:txa	REDUCES	OUT:reoperation_for_bleeding	TRIAL	high		EFFECT:arr_1_4pp_reoperation | 1.4% vs 2.8%; ARR 1.4 pp (p=0.001)	PROC:cabg	positive		TRIAL:atacas	false
+DOSE:txa_high_dose_cardiac	REDUCES	OUT:allogeneic_rbc_transfusion	TRIAL	moderate		EFFECT:rd_minus_4_1pp_transfusion | 21.8% vs 26.0%; risk difference -4.1 pp (95% CI -7.2 to -1.1)	PROC:cardiac_surgery_cpb	positive		TRIAL:optimal	false
+INT:txa	REDUCES	OUT:allogeneic_rbc_transfusion	META	moderate		EFFECT:rr_0_62_transfusion | RR 0.62 (95% CI 0.58-0.65)	POP:adult_elective_surgery	positive		META:cochrane_ker_surgical_bleeding	false
+INT:txa	REDUCES	OUT:allogeneic_rbc_transfusion	GUIDELINE	high	guideline_rated		PROC:tka	positive		GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	REDUCES	OUT:allogeneic_rbc_transfusion	GUIDELINE	high	guideline_rated		PROC:tha	positive		GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	REDUCES	OUT:calculated_blood_loss	GUIDELINE	high	guideline_rated		PROC:tka	positive		GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	REDUCES	OUT:haemoglobin_change	GUIDELINE	moderate	synthesis_appraisal		PROC:tka	positive	smaller postoperative haemoglobin decline	GL:aahks_aaos_asra_hip_knee_txa_2018	false
+INT:txa	REDUCES	OUT:measured_blood_loss	META	moderate	synthesis_appraisal	EFFECT:spine_pooled | Intraoperative blood loss MD ~-47 mL; total estimated blood loss MD ~-210 mL; transfusion RR ~0.68	PROC:spine_fusion_multilevel	positive		META:spine_nma	false
+INT:txa	REDUCES	OUT:allogeneic_rbc_transfusion	META	moderate	synthesis_appraisal	EFFECT:spine_pooled | Intraoperative blood loss MD ~-47 mL; total estimated blood loss MD ~-210 mL; transfusion RR ~0.68	PROC:spine_fusion_multilevel	positive		META:spine_nma	false
+INT:txa	REDUCES	OUT:death_due_to_bleeding	TRIAL	moderate		EFFECT:rr_0_81_death_bleeding | 1.5% vs 1.9%; RR 0.81 (95% CI 0.65-1.00); p=0.045	POP:postpartum_woman_clinically_diagnosed_pph	positive		TRIAL:woman	false
+INT:txa	REDUCES	OUT:laparotomy_for_bleeding	TRIAL	moderate		EFFECT:rr_0_64_laparotomy | RR 0.64 (95% CI 0.49-0.85)	POP:postpartum_woman_clinically_diagnosed_pph	positive		TRIAL:woman	false
+INT:txa	REDUCES	OUT:life_threatening_bleeding	META	moderate			POP:postpartum_woman_clinically_diagnosed_pph	positive	irrespective of mode of birth or anaemia status; effect estimates unverified at source	META:ipd_pph_2024	true
+INT:txa	DOES_NOT_REDUCE	OUT:allogeneic_rbc_transfusion	TRIAL	moderate	synthesis_appraisal	EFFECT:null_helix_transfusion | 16.3% vs 14.5% transfusion; blood loss 836 vs 817 mL — no reduction	PROC:liver_resection	positive		TRIAL:helix	false
+INT:txa	DOES_NOT_REDUCE	OUT:measured_blood_loss	TRIAL	moderate	synthesis_appraisal	EFFECT:null_helix_transfusion | 16.3% vs 14.5% transfusion; blood loss 836 vs 817 mL — no reduction	PROC:liver_resection	positive		TRIAL:helix	false
+INT:txa	DOES_NOT_REDUCE	OUT:clinically_diagnosed_pph	TRIAL	high	synthesis_appraisal	EFFECT:null_woman2_pph | 7.0% (530/7579) vs 6.6% (497/7478) — no reduction	POP:anaemic_woman_in_labour	positive	prophylactic use within 15 min of cord clamping	TRIAL:woman2	false
+INT:txa	DOES_NOT_REDUCE	OUT:allogeneic_rbc_transfusion	TRIAL	moderate		EFFECT:null_mfmu_composite | 3.6% vs 4.3% (maternal death or transfusion) — not significant	POP:woman_undergoing_caesarean	positive	prophylactic use	TRIAL:nichd_mfmu_txa_cesarean	false
+INT:txa	DOES_NOT_REDUCE	OUT:mortality_all_cause	TRIAL	moderate		EFFECT:null_mfmu_composite | 3.6% vs 4.3% (maternal death or transfusion) — not significant	POP:woman_undergoing_caesarean	positive		TRIAL:nichd_mfmu_txa_cesarean	false
+INT:txa	DOES_NOT_REDUCE	OUT:clinically_diagnosed_pph	TRIAL	moderate		EFFECT:traap_ns | PPH >=500 mL 8.1% vs 9.8%; RR 0.83 (95% CI 0.68-1.01); p=0.07 — not significant	POP:woman_after_vaginal_birth	positive	prophylactic use; RR 0.83 (0.68-1.01), p=0.07	TRIAL:traap	false
+INT:txa	DOES_NOT_REDUCE	OUT:hysterectomy	TRIAL	moderate			POP:postpartum_woman_clinically_diagnosed_pph	positive	decision frequently made at or before enrolment	TRIAL:woman	false
+ROUTE:topical	DOES_NOT_REDUCE	SAFE:seizure	TRIAL	moderate			PROC:cardiac_surgery_cpb	positive	versus IV TXA	TRIAL:deposition	false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	SAFE:arterial_thromboembolism	TRIAL	moderate		EFFECT:hr_1_02_ci_0_92_1_14_ni_not_met | HR 1.02 (95% CI 0.92-1.14); 14.2% vs 13.9%; non-inferiority margin 1.125 NOT met		positive	non-inferiority NOT established; neutral point estimate with CI permitting clinically meaningful excess	TRIAL:poise3	false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	SAFE:venous_thromboembolism	META	low				positive	DVT RR 0.86 (0.53-1.39); PE RR 0.61 (0.25-1.47) — imprecise, not reassuring	META:cochrane_ker_surgical_bleeding	true
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	SAFE:myocardial_infarction	META	low				positive	RR 0.68 (0.43-1.09) — imprecise	META:cochrane_ker_surgical_bleeding	true
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	SAFE:stroke	META	low				positive	RR 1.14 (0.65-2.00) — imprecise	META:cochrane_ker_surgical_bleeding	true
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	SAFE:seizure	TRIAL	low	synthesis_appraisal		PROC:cardiac_surgery_cpb	positive	high vs low dose comparison underpowered for seizure	TRIAL:optimal	false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	SAFE:acute_kidney_injury	TRIAL	low	synthesis_appraisal			positive	no significant difference detected; power limited	TRIAL:optimal	false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	OUT:length_of_stay	CONSENSUS	low	synthesis_appraisal			positive	small and confounded by enhanced-recovery pathways		false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	OUT:measured_blood_loss	CONSENSUS	very_low	synthesis_appraisal		PROC:thoracic_resection	positive	no adequately powered specialty evidence; indirect support from POISE-3 only		false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	OUT:allogeneic_rbc_transfusion	META	low	synthesis_appraisal		PROC:myomectomy	positive	small single-centre trials; confounding co-interventions		false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	OUT:allogeneic_rbc_transfusion	META	low	synthesis_appraisal		PROC:radical_prostatectomy	positive			false
+INT:txa	ASSOCIATED_WITH	SAFE:seizure	TRIAL	high		EFFECT:rr_7_6_seizure | 0.7% vs 0.1%; RR ~7.6 (95% CI 1.77-68.71); p=0.002	PROC:cabg	positive	dose-dependent; protocol amended from 100 to 50 mg/kg during trial	TRIAL:atacas	false
+DOSE:txa_high_dose_cardiac	ASSOCIATED_WITH	SAFE:seizure	META	moderate	synthesis_appraisal			positive	risk amplified by renal impairment, open-chamber procedures and long bypass times	META:txa_renal_pk	false
+INT:txa	ASSOCIATED_WITH	SAFE:perioperative_complications	TRIAL	moderate		EFFECT:increased_harm | Increase in the stated adverse outcome relative to comparator	PROC:liver_resection	positive	complications significantly more common with TXA	TRIAL:helix	false
+ROUTE:topical	ASSOCIATED_WITH	OUT:allogeneic_rbc_transfusion	TRIAL	moderate		EFFECT:increased_harm | Increase in the stated adverse outcome relative to comparator	PROC:cardiac_surgery_cpb	positive	more bleeding events/transfusion than IV; trial stopped early	TRIAL:deposition	false
+INT:txa	ASSOCIATED_WITH	SAFE:nausea_vomiting	TRIAL	low				positive		TRIAL:traap2	true
+INT:txa	ASSOCIATED_WITH	SAFE:clot_retention_urinary_tract	CONSENSUS	very_low	synthesis_appraisal		PROC:major_urologic_surgery	positive	theoretical, mechanism-based hazard with upper-tract bleeding		false
+INT:txa	ASSOCIATED_WITH	SAFE:vascular_occlusive_events	TRIAL	moderate		EFFECT:null_woman2_pph | 7.0% (530/7579) vs 6.6% (497/7478) — no reduction		positive	no vascular occlusive events reported in either arm — absence of observed events is not proof of safety	TRIAL:woman2	false
+INT:txa	CONTRAINDICATED_IN	CONTRA:hypersensitivity	CONSENSUS	high				positive			false
+INT:txa	CONTRAINDICATED_IN	CONTRA:active_intravascular_clotting	CONSENSUS	high				positive			false
+INT:txa	CONTRAINDICATED_IN	CONTRA:acquired_defective_colour_vision	CONSENSUS	moderate				positive			false
+INT:txa	CONTRAINDICATED_IN	CONTRA:intrathecal_administration	CONSENSUS	high				positive	fatal wrong-route medication error; requires physical segregation of look-alike ampoules		false
+INT:txa	CONTRAINDICATED_IN	CONTRA:subarachnoid_haemorrhage	CONSENSUS	moderate				positive	per most product labelling		false
+INT:txa	RECOMMENDED_BY	GL:who_pph_consolidated_2025	GUIDELINE	moderate			IND:treatment_of_pph	positive	early IV TXA within 3 h of birth, in addition to standard care, after vaginal birth or caesarean section		false
+INT:txa	RECOMMENDED_BY	GL:who_pph_consolidated_2025	GUIDELINE	moderate			IND:prophylaxis_of_pph	NEGATIVE	TXA is NOT recommended for the prevention of PPH at caesarean birth		false
+INT:txa	RECOMMENDED_BY	GL:who_txa_pph_2017	GUIDELINE	moderate			IND:treatment_of_pph	positive	strong recommendation		false
+INT:txa	RECOMMENDED_BY	GL:figo_txa_pph_statement	GUIDELINE	moderate			IND:treatment_of_pph	positive			false
+INT:txa	RECOMMENDED_BY	GL:aahks_aaos_asra_hip_knee_txa_2018	GUIDELINE	high			PROC:tka	positive	strong recommendation, high-quality evidence		false
+INT:txa	RECOMMENDED_BY	GL:eacts_eactaic_pbm_cardiac_2024	GUIDELINE	high			PROC:cardiac_surgery_cpb	positive			false
+INT:txa	SUPPORTED_BY	TRIAL:poise3	TRIAL				PROC:noncardiac_surgery_mixed	positive			false
+INT:txa	SUPPORTED_BY	TRIAL:atacas	TRIAL				PROC:cabg	positive			false
+INT:txa	SUPPORTED_BY	TRIAL:optimal	TRIAL				PROC:cardiac_surgery_cpb	positive			false
+INT:txa	SUPPORTED_BY	TRIAL:woman	TRIAL				IND:treatment_of_pph	positive			false
+INT:txa	SUPPORTED_BY	META:ipd_pph_2024	META				IND:treatment_of_pph	positive			false
+INT:txa	SUPPORTED_BY	META:cochrane_ker_surgical_bleeding	META				IND:reduce_perioperative_blood_loss	positive			false
+INT:txa	SUPPORTED_BY	META:spine_nma	META				PROC:spine_fusion_multilevel	positive			false
+TRIAL:poise3	LIMITED_BY	LIM:imprecision_rare_events	TRIAL					positive	non-inferiority margin of 1.125 not met for the cardiovascular safety composite		false
+TRIAL:optimal	LIMITED_BY	LIM:single_country_evidence	TRIAL					positive			false
+TRIAL:optimal	LIMITED_BY	LIM:underpowered_for_seizure	TRIAL					positive			false
+TRIAL:woman	LIMITED_BY	LIM:composite_outcome_hysterectomy_timing	TRIAL					positive			false
+TRIAL:traap2	LIMITED_BY	LIM:surrogate_vs_clinical_divergence	TRIAL					positive			false
+GL:aahks_aaos_asra_hip_knee_txa_2018	LIMITED_BY	LIM:high_thrombotic_risk_excluded	GUIDELINE					positive	'not contraindicated' in prior VTE/MI/stroke/stents reflects absence of evidence, not evidence of absence		false
+META:cochrane_ker_surgical_bleeding	LIMITED_BY	LIM:transfusion_threshold_dependence	META					positive			false
+META:cochrane_ker_surgical_bleeding	LIMITED_BY	LIM:imprecision_rare_events	META					positive			false
+META:spine_nma	LIMITED_BY	LIM:outcome_heterogeneity_blood_loss	META					positive			false
+META:spine_nma	LIMITED_BY	LIM:small_single_centre_trials	META					positive			false
+TRIAL:woman2	LIMITED_BY	LIM:outcome_heterogeneity_blood_loss	TRIAL					positive	primary outcome was clinically diagnosed PPH, not severe-bleeding endpoints		false
+INT:txa	LIMITED_BY	LIM:short_followup	CONSENSUS					positive			false
+INT:txa	LIMITED_BY	CERT:moderate	TRIAL				SAFE:arterial_thromboembolism	positive	cardiovascular non-inferiority not established in noncardiac surgery		false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:cv_noninferiority_noncardiac	TRIAL					positive		TRIAL:poise3	false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:optimal_dose_by_specialty	META					positive			false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:safety_in_prior_thrombotic_disease	GUIDELINE					positive			false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:renal_dosing_algorithm	CONSENSUS					positive			false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:mechanism_of_harm_liver_resection	TRIAL					positive		TRIAL:helix	false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:targeted_pph_prophylaxis_high_risk	META					positive		META:ipd_pph_2024	false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:thoracic_surgery_evidence	CONSENSUS					positive			false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:gynaecologic_urologic_evidence	CONSENSUS					positive			false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:seizure_risk_high_dose_spine	CONSENSUS					positive			false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:long_term_outcomes	CONSENSUS					positive			false
+INT:txa	ASSOCIATED_WITH	PILLAR:2_blood_loss_minimisation	CONSENSUS	high				positive	TXA is a Pillar 2 intervention		false
+INT:txa	DOES_NOT_REDUCE	OUT:haemoglobin_change	CONSENSUS	high			PILLAR:1_preop_anaemia	positive	TXA has no erythropoietic effect and does not treat preoperative anaemia or iron deficiency		false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	PILLAR:3_anaemia_tolerance_transfusion	CONSENSUS	high				positive	TXA reduces transfusion exposure by reducing loss but does not alter the transfusion decision rule		false
+COINT:iv_iron	INDICATED_FOR	PILLAR:1_preop_anaemia	GUIDELINE	moderate				positive		GL:cpoc_anaemia_2025	false
+COINT:restrictive_transfusion_threshold	INDICATED_FOR	PILLAR:3_anaemia_tolerance_transfusion	GUIDELINE	moderate				positive		GL:cpoc_anaemia_2025	false
+COINT:cell_salvage	INDICATED_FOR	PILLAR:2_blood_loss_minimisation	GUIDELINE	moderate				positive		GL:eacts_eactaic_pbm_cardiac_2024	false
+COINT:uterotonics	INDICATED_FOR	IND:treatment_of_pph	GUIDELINE	high				positive	TXA is additional to, never a substitute for, uterotonics	GL:who_pph_consolidated_2025	false
+COINT:uterine_tamponade	INDICATED_FOR	IND:treatment_of_pph	GUIDELINE	moderate				positive		GL:who_pph_consolidated_2025	false
+COINT:obstetric_surgical_control	INDICATED_FOR	IND:treatment_of_pph	GUIDELINE	moderate				positive		GL:who_pph_consolidated_2025	false
+COINT:blood_component_therapy	INDICATED_FOR	IND:treatment_of_pph	GUIDELINE	moderate				positive		GL:who_pph_consolidated_2025	false
+COINT:vte_prophylaxis	INDICATED_FOR	PROC:tka	CONSENSUS	high				positive	TXA neither replaces nor contraindicates VTE prophylaxis		false
+PROC:cardiac_surgery_cpb	ASSOCIATED_WITH	RISK:high	CONSENSUS	high				positive			false
+PROC:liver_resection	ASSOCIATED_WITH	RISK:high	CONSENSUS	high				positive			false
+PROC:spine_fusion_multilevel	ASSOCIATED_WITH	RISK:high	CONSENSUS	moderate				positive			false
+PROC:tka	ASSOCIATED_WITH	RISK:moderate	CONSENSUS	high				positive			false
+PROC:tha	ASSOCIATED_WITH	RISK:moderate	CONSENSUS	high				positive			false
+PROC:myomectomy	ASSOCIATED_WITH	RISK:moderate	CONSENSUS	moderate				positive			false
+PROC:radical_prostatectomy	ASSOCIATED_WITH	RISK:moderate	CONSENSUS	moderate				positive			false
+PROC:thoracic_resection	ASSOCIATED_WITH	RISK:low	CONSENSUS	low				positive	moderate-to-high for extended, redo or chest-wall resections		false
+INT:txa	DOSED_AS	DOSE:txa_liver_resection	TRIAL	moderate				NEGATIVE	regimen recorded for completeness; the trial was negative and this regimen is not recommended	TRIAL:helix	false
+INT:txa	HAS_UNCERTAIN_EFFECT_ON	SAFE:seizure	CONSENSUS	low			POP:adult_renal_impairment	positive	renal accumulation sustains supratherapeutic concentrations (~12 h in CKD 3-5 modelling); dose reduction required, no validated algorithm		false
+INT:txa	REQUIRES_FURTHER_STUDY	GAP:renal_dosing_algorithm	META				POP:adult_renal_impairment	positive		META:txa_renal_pk	false
+PROC:trauma_surgery	LIMITED_BY	LIM:high_thrombotic_risk_excluded	CONSENSUS					positive	BOUNDARY NODE — trauma evidence must not be transported to elective surgery in either direction		false
+PROC:hip_fracture_urgent	LIMITED_BY	LIM:high_thrombotic_risk_excluded	CONSENSUS					positive	BOUNDARY NODE — urgent surgery, outside the elective evidence base		false

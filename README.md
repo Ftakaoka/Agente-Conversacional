@@ -9,6 +9,7 @@ Triagem pré-operatória cardiovascular para **adultos em cirurgia eletiva não 
 | [`protocolos/`](protocolos/) | Protocolo consolidado em JSON: algoritmo híbrido ESC 2022 + ACC/AHA 2024, classificador ASA-PS, matriz de exames NICE NG45 |
 | [`motor_triagem/`](motor_triagem/) | Motor Python (sem dependências) que percorre os nós N0–N11 do protocolo |
 | [`tests/`](tests/) | Testes de cenário do motor (`python3 -m unittest discover -s tests`) |
+| [`evidencia/txa/`](evidencia/txa/) | Síntese de evidência sobre ácido tranexâmico (TXA) em cirurgia eletiva e hemorragia pós-parto, situada nos três pilares do PBM, com grafo de conhecimento (JSON + TSV) |
 
 ## Motor de triagem
 
