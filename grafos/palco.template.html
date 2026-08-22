@@ -1,0 +1,417 @@
+<title>Caminho até CASA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#EEF1F2; --surface:#FFFFFF; --sunken:#E4E9EB;
+  --ink:#131A1F; --muted:#5E717C; --faint:#8B9CA6;
+  --line:#CBD5D9; --line-soft:#DDE4E7;
+  --via:#0E6B5F; --via-soft:#D3E5E1;
+  --quebra:#9C3A30; --quebra-soft:#F0DBD7;
+  --casa:#A96E24; --casa-soft:#F2E4CC;
+  --dim:0.10;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono","SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#12171B; --surface:#1A2126; --sunken:#0D1215;
+    --ink:#E4EAED; --muted:#93A5AF; --faint:#6A7C86;
+    --line:#2C363D; --line-soft:#232C32;
+    --via:#4CB3A0; --via-soft:#16332E;
+    --quebra:#DB8578; --quebra-soft:#361F1B;
+    --casa:#D9A254; --casa-soft:#33270F;
+    --dim:0.14;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12171B; --surface:#1A2126; --sunken:#0D1215;
+  --ink:#E4EAED; --muted:#93A5AF; --faint:#6A7C86;
+  --line:#2C363D; --line-soft:#232C32;
+  --via:#4CB3A0; --via-soft:#16332E;
+  --quebra:#DB8578; --quebra-soft:#361F1B;
+  --casa:#D9A254; --casa-soft:#33270F;
+  --dim:0.14;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1400px; margin:0 auto; padding:28px 24px 64px; display:flex; flex-direction:column; gap:24px}
+
+/* ---- cabeçalho ---- */
+header{display:flex; flex-direction:column; gap:14px}
+.eyebrow{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--faint); display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+}
+.eyebrow b{color:var(--muted); font-weight:500}
+h1{
+  font-family:var(--serif); font-weight:600; font-size:clamp(30px,4.4vw,48px);
+  line-height:1.05; margin:0; letter-spacing:-.015em; text-wrap:balance;
+}
+h1 em{font-style:italic; color:var(--casa)}
+.tese{
+  font-family:var(--serif); font-size:clamp(16px,1.9vw,19.5px); line-height:1.5;
+  color:var(--muted); max-width:64ch; margin:0; text-wrap:pretty;
+}
+
+/* ---- seletor de paciente ---- */
+.pacientes{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px}
+.pac{
+  text-align:left; cursor:pointer; background:var(--surface); color:inherit;
+  border:1px solid var(--line); border-left:3px solid var(--line);
+  padding:14px 16px; display:flex; flex-direction:column; gap:6px;
+  font:inherit; transition:border-color .15s, background .15s;
+}
+.pac:hover{border-color:var(--faint)}
+.pac[aria-pressed="true"]{border-color:var(--line); border-left-color:var(--casa); background:var(--sunken)}
+.pac:focus-visible{outline:2px solid var(--via); outline-offset:2px}
+.pac .id{font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--faint)}
+.pac .nome{font-family:var(--serif); font-size:19px; font-weight:600; line-height:1.15}
+.pac .caso{font-size:13px; color:var(--muted); line-height:1.4}
+.pac .meta{
+  font-family:var(--serif); font-style:italic; font-size:13.5px; color:var(--casa);
+  border-top:1px solid var(--line-soft); padding-top:7px; margin-top:2px;
+}
+
+/* ---- grafo ---- */
+.grafo-box{background:var(--surface); border:1px solid var(--line); overflow-x:auto}
+svg.grafo{display:block; min-width:900px; width:100%; height:auto}
+.col-label{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; fill:var(--faint)}
+.no-label{font-family:var(--sans); font-size:11px; fill:var(--muted)}
+.aresta{fill:none; stroke:var(--line); stroke-width:1.1; opacity:var(--dim)}
+.no-forma{fill:var(--surface); stroke:var(--line); stroke-width:1.4; opacity:.28}
+.aceso .aresta{opacity:1; stroke:var(--via); stroke-width:2.4}
+.aceso .no-forma{opacity:1; stroke:var(--via); stroke-width:2.2; fill:var(--via-soft)}
+.aceso .no-label{fill:var(--ink); font-weight:500}
+.rompido .aresta{opacity:1; stroke:var(--quebra); stroke-width:2.4; stroke-dasharray:5 4}
+.rompido .no-forma{opacity:1; stroke:var(--quebra); stroke-width:2.2; fill:var(--quebra-soft)}
+.rompido .no-label{fill:var(--ink); font-weight:500}
+.casa-forma{fill:var(--casa-soft); stroke:var(--casa); stroke-width:2}
+.casa-label{font-family:var(--serif); font-size:15px; font-weight:600; fill:var(--casa)}
+.corte line{stroke:var(--quebra); stroke-width:2.6; stroke-linecap:round}
+.corte text{font-family:var(--mono); font-size:11px; font-weight:600; fill:var(--quebra)}
+
+/* ---- painéis ---- */
+.painel{display:grid; grid-template-columns:minmax(320px,1fr) minmax(340px,1.15fr); gap:20px; align-items:start}
+@media (max-width:980px){.painel{grid-template-columns:1fr}}
+.bloco{background:var(--surface); border:1px solid var(--line)}
+.bloco h2{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--faint); font-weight:500; margin:0; padding:13px 16px;
+  border-bottom:1px solid var(--line-soft); display:flex; justify-content:space-between; gap:10px;
+}
+.grupo{border-bottom:1px solid var(--line-soft)}
+.grupo:last-child{border-bottom:0}
+.grupo-cab{
+  display:flex; align-items:baseline; gap:9px; padding:12px 16px 7px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+}
+.grupo-cab .n{margin-left:auto; color:var(--faint); font-variant-numeric:tabular-nums}
+.g-sobrevivente .grupo-cab{color:var(--via)}
+.g-condicional .grupo-cab{color:var(--muted)}
+.g-cemiterio .grupo-cab{color:var(--quebra)}
+.grupo-nota{padding:0 16px 8px; font-size:12.5px; color:var(--faint); line-height:1.4}
+
+.ver{
+  width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer;
+  background:none; border:0; border-left:3px solid transparent;
+  padding:8px 16px 9px; display:flex; gap:11px; align-items:baseline;
+  transition:background .12s;
+}
+.ver:hover{background:var(--sunken)}
+.ver:focus-visible{outline:2px solid var(--via); outline-offset:-2px}
+.ver[aria-pressed="true"]{background:var(--sunken)}
+.g-sobrevivente .ver[aria-pressed="true"]{border-left-color:var(--via)}
+.g-condicional .ver[aria-pressed="true"]{border-left-color:var(--muted)}
+.g-cemiterio .ver[aria-pressed="true"]{border-left-color:var(--quebra)}
+.ver .tag{
+  font-family:var(--mono); font-size:10.5px; font-weight:600; letter-spacing:.06em;
+  padding:1px 5px; border:1px solid currentColor; flex-shrink:0; line-height:1.5;
+}
+.g-sobrevivente .tag{color:var(--via)}
+.g-condicional .tag{color:var(--muted)}
+.g-cemiterio .tag{color:var(--quebra)}
+.ver .txt{font-size:14px; line-height:1.35}
+.ver .txt small{display:block; color:var(--faint); font-size:12.5px; margin-top:2px}
+
+/* ---- trajeto ---- */
+#trajeto{padding:16px 18px 20px; display:flex; flex-direction:column; gap:0}
+#trajeto .titulo{
+  font-family:var(--serif); font-size:22px; font-weight:600; line-height:1.2;
+  margin:0 0 3px; text-wrap:balance;
+}
+#trajeto .sub{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:15px}
+.linha{display:flex; gap:11px; padding:5px 0; border-top:1px solid var(--line-soft); font-size:13.5px; line-height:1.45}
+.linha:first-of-type{border-top:0}
+.linha .ar{
+  font-family:var(--mono); font-size:10.5px; font-weight:600; letter-spacing:.05em;
+  color:var(--faint); flex:0 0 92px; padding-top:3px;
+}
+.linha .co{flex:1; min-width:0; color:var(--ink)}
+.linha .co i{font-family:var(--mono); font-style:normal; font-variant-numeric:tabular-nums}
+.linha.l-corte .ar,.linha.l-corte .co{color:var(--quebra)}
+.linha.l-corte{background:var(--quebra-soft); margin:0 -18px; padding:7px 18px}
+.linha.l-casa .co{color:var(--casa); font-weight:500}
+.linha.l-nota .co{color:var(--muted); font-size:13px}
+.linha.l-indent .ar{padding-left:14px}
+.lapide{
+  font-family:var(--serif); font-size:20px; font-style:italic; color:var(--quebra);
+  border-top:2px solid var(--quebra); margin-top:14px; padding-top:12px; line-height:1.25;
+}
+
+/* ---- legenda / rodapé ---- */
+.legenda{display:flex; flex-wrap:wrap; gap:6px 22px; padding:11px 16px; border-top:1px solid var(--line-soft);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; color:var(--faint)}
+.legenda span{display:flex; align-items:center; gap:6px}
+.sw{width:11px; height:11px; flex-shrink:0}
+.sw.duro{border-radius:50%; background:var(--muted)}
+.sw.subst{border-radius:50%; border:1.5px dashed var(--muted)}
+.sw.adv{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid var(--muted)}
+.aviso{
+  font-size:12.5px; color:var(--faint); line-height:1.5; max-width:76ch;
+  border-top:1px solid var(--line); padding-top:14px;
+}
+.aviso b{color:var(--quebra); font-weight:600}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <p class="eyebrow"><b>Vera PreOp.AI</b> · graph-RAG de hemostasia <span>·</span> hemoderivados e drogas hemostáticas em PBM</p>
+  <h1>Nada entra na conduta sem caminho até <em>CASA</em>.</h1>
+  <p class="tese">CASA é o nó terminal: dias vivo e fora do hospital em 30 dias. Só desfecho <b>duro</b> tem aresta até lá — desfecho substituto é beco sem saída por construção do grafo, não por opinião. Escolha o paciente; depois escolha uma intervenção e veja o caminho fechar, ou o nome exato da aresta que rompe.</p>
+</header>
+
+<div class="pacientes" id="pacientes"></div>
+
+<div class="grafo-box">
+  <svg class="grafo" id="grafo" role="img" aria-label="Grafo em camadas do paciente selecionado"></svg>
+  <div class="legenda">
+    <span><i class="sw duro"></i> desfecho duro — tem aresta até CASA</span>
+    <span><i class="sw subst"></i> substituto — beco sem saída</span>
+    <span><i class="sw adv"></i> adverso — conta negativo</span>
+    <span style="color:var(--via)">━ caminho fecha</span>
+    <span style="color:var(--quebra)">╌ caminho rompe</span>
+  </div>
+</div>
+
+<div class="painel">
+  <div class="bloco">
+    <h2><span>Vereditos</span><span id="contador"></span></h2>
+    <div id="vereditos"></div>
+  </div>
+  <div class="bloco" id="trajeto-box">
+    <h2><span>O porquê — o caminho, aresta por aresta</span></h2>
+    <div id="trajeto"></div>
+  </div>
+</div>
+
+<p class="aviso"><b>Arestas de evidência não auditadas.</b> Efeitos e intervalos de confiança foram curados por um modelo de linguagem e ainda não foram conferidos contra o artigo primário. Material didático e apoio à decisão — não é diretriz e não substitui julgamento clínico.</p>
+</div>
+
+<script id="dados" type="application/json">__PAYLOAD__</script>
+<script>
+const D = JSON.parse(document.getElementById('dados').textContent);
+const NS = 'http://www.w3.org/2000/svg';
+const CAMADAS = [['achado','Achado'],['mecanismo','Mecanismo'],['intervencao','Intervenção'],['estudo','Estudo'],['desfecho','Desfecho'],['casa','CASA']];
+const CLASSES = {sobrevivente:['Sobrevive','caminho fechado até CASA'],condicional:['Condicional','o caminho fecha, mas é frágil'],cemiterio:['Cemitério','o caminho rompe']};
+
+let pAtivo = 0, vAtivo = 0;
+
+function el(t,a={},txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e;}
+function rotulo(tipo,id){const n=D.nos[tipo][id];return typeof n==='string'?n:n.rotulo;}
+function quebrar(s,max){const w=s.split(' ');const out=[];let l='';for(const x of w){if((l+' '+x).trim().length>max){out.push(l.trim());l=x;}else l=(l+' '+x).trim();}if(l)out.push(l);return out.slice(0,3);}
+
+/* ---------- pacientes ---------- */
+const boxPac = document.getElementById('pacientes');
+D.pacientes.forEach((p,i)=>{
+  const b=document.createElement('button');
+  b.className='pac'; b.type='button'; b.setAttribute('aria-pressed', i===0);
+  b.innerHTML=`<span class="id">${p.id}</span><span class="nome"></span><span class="caso"></span><span class="meta"></span>`;
+  b.querySelector('.nome').textContent=p.nome;
+  b.querySelector('.caso').textContent=p.caso;
+  b.querySelector('.meta').textContent='“'+p.meta+'”';
+  b.onclick=()=>{pAtivo=i;vAtivo=0;render();};
+  boxPac.appendChild(b);
+});
+
+/* ---------- vereditos ---------- */
+function renderVereditos(){
+  const p=D.pacientes[pAtivo], box=document.getElementById('vereditos');
+  box.textContent='';
+  document.getElementById('contador').textContent=p.vereditos.length+' rotas';
+  for(const cls of ['sobrevivente','condicional','cemiterio']){
+    const itens=p.vereditos.map((v,i)=>[v,i]).filter(([v])=>v.classe===cls);
+    const g=document.createElement('div'); g.className='grupo g-'+cls;
+    const cab=document.createElement('div'); cab.className='grupo-cab';
+    cab.innerHTML=`<span>${CLASSES[cls][0]}</span><span class="n">${itens.length}</span>`;
+    g.appendChild(cab);
+    const nota=document.createElement('p'); nota.className='grupo-nota'; nota.textContent=CLASSES[cls][1];
+    g.appendChild(nota);
+    if(!itens.length){const v=document.createElement('p');v.className='grupo-nota';v.style.fontStyle='italic';v.textContent='nenhuma.';g.appendChild(v);}
+    for(const [v,i] of itens){
+      const b=document.createElement('button'); b.className='ver'; b.type='button';
+      b.setAttribute('aria-pressed', i===vAtivo);
+      const tag=v.falha||(v.classe==='sobrevivente'?'✔':'~');
+      b.innerHTML=`<span class="tag"></span><span class="txt"></span>`;
+      b.querySelector('.tag').textContent=tag;
+      const t=b.querySelector('.txt');
+      t.textContent=rotulo('intervencao',v.intervencao);
+      const s=document.createElement('small');
+      s.textContent = v.estudo ? rotulo('estudo',v.estudo) : 'nenhum ensaio testou';
+      t.appendChild(s);
+      b.onclick=()=>{vAtivo=i;render();};
+      g.appendChild(b);
+    }
+    box.appendChild(g);
+  }
+}
+
+/* ---------- grafo ---------- */
+function renderGrafo(){
+  const p=D.pacientes[pAtivo], svg=document.getElementById('grafo');
+  svg.textContent='';
+  const camadas={achado:[],mecanismo:[],intervencao:[],estudo:[],desfecho:[]};
+  const push=(k,id)=>{if(id&&!camadas[k].includes(id))camadas[k].push(id);};
+  for(const v of p.vereditos){
+    push('achado',v.achado); push('mecanismo',v.mecanismo); push('intervencao',v.intervencao);
+    push('estudo',v.estudo); v.desfechos.forEach(d=>push('desfecho',d));
+  }
+  const COLW=272, PADX=26, PADY=52, ESP=34;
+  const alturas=Object.values(camadas).map(a=>a.length);
+  const H=Math.max(...alturas, 6)*ESP + PADY*2;
+  const W=COLW*5 + PADX*2 + 130;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+
+  const pos={};
+  CAMADAS.forEach(([k,label],ci)=>{
+    const x=PADX+ci*COLW;
+    svg.appendChild(el('text',{x, y:26, class:'col-label'}, label.toUpperCase()));
+    if(k==='casa'){pos['CASA']={x, y:H/2}; return;}
+    const lista=camadas[k], off=(H-PADY - (lista.length-1)*ESP)/2;
+    lista.forEach((id,ri)=>{
+      const ls=quebrar(rotulo(k,id),26);
+      const w=Math.max(...ls.map(t=>t.length))*5.45+16;
+      pos[id]={x, y:off+ri*ESP, w:Math.min(w,COLW-46)};
+    });
+  });
+
+  const gFundo=el('g'), gAceso=el('g');
+  svg.appendChild(gFundo); svg.appendChild(gAceso);
+
+  const curva=(a,b)=>{const x0=a.x+(a.w||8), x1=b.x-9, mx=(x0+x1)/2;
+    return `M${x0},${a.y} C${mx},${a.y} ${mx},${b.y} ${x1},${b.y}`;};
+
+  function desenhaRota(v, alvo, aceso){
+    const seq=[v.achado,v.mecanismo,v.intervencao,v.estudo].filter(Boolean);
+    const g=el('g',{class: aceso ? (v.classe==='cemiterio'?'rompido':'aceso') : ''});
+    for(let i=0;i<seq.length-1;i++) g.appendChild(el('path',{class:'aresta', d:curva(pos[seq[i]],pos[seq[i+1]])}));
+    if(v.estudo){
+      for(const d of v.desfechos){
+        g.appendChild(el('path',{class:'aresta', d:curva(pos[v.estudo],pos[d])}));
+        const tipo=D.nos.desfecho[d].tipo;
+        if(tipo!=='substituto') g.appendChild(el('path',{class:'aresta', d:curva(pos[d],pos['CASA'])}));
+      }
+    }
+    alvo.appendChild(g);
+    return g;
+  }
+
+  p.vereditos.forEach((v,i)=>{if(i!==vAtivo) desenhaRota(v,gFundo,false);});
+
+  /* nós */
+  const gNos=el('g'); svg.appendChild(gNos);
+  const ativo=p.vereditos[vAtivo];
+  const acesos=new Set([ativo.achado,ativo.mecanismo,ativo.intervencao,ativo.estudo,...ativo.desfechos].filter(Boolean));
+  CAMADAS.forEach(([k])=>{
+    if(k==='casa') return;
+    for(const id of camadas[k]){
+      const q=pos[id], on=acesos.has(id);
+      const g=el('g',{class:on?(ativo.classe==='cemiterio'?'rompido':'aceso'):''});
+      if(k==='desfecho'){
+        const tipo=D.nos.desfecho[id].tipo;
+        if(tipo==='adverso') g.appendChild(el('path',{class:'no-forma', d:`M${q.x},${q.y-6} L${q.x+6},${q.y+5} L${q.x-6},${q.y+5} Z`}));
+        else{const c=el('circle',{class:'no-forma', cx:q.x, cy:q.y, r:5.5});
+             if(tipo==='substituto'){c.setAttribute('stroke-dasharray','3 2');c.setAttribute('fill','none');}
+             g.appendChild(c);}
+      } else g.appendChild(el('circle',{class:'no-forma', cx:q.x, cy:q.y, r:4.5}));
+      const linhas=quebrar(rotulo(k,id), 26);
+      linhas.forEach((t,li)=>g.appendChild(el('text',{class:'no-label', x:q.x+11, y:q.y+3.5+li*11.5}, t)));
+      gNos.appendChild(g);
+    }
+  });
+
+  /* nó CASA */
+  const c=pos['CASA'];
+  const gc=el('g');
+  gc.appendChild(el('path',{class:'casa-forma', d:`M${c.x},${c.y-19} L${c.x+17},${c.y-5} L${c.x+17},${c.y+17} L${c.x-17},${c.y+17} L${c.x-17},${c.y-5} Z`}));
+  gc.appendChild(el('text',{class:'casa-label', x:c.x, y:c.y+9, 'text-anchor':'middle'},'CASA'));
+  gc.appendChild(el('text',{class:'no-label', x:c.x, y:c.y+33, 'text-anchor':'middle'},'DAOH-30'));
+  svg.appendChild(gc);
+
+  /* rota ativa, por cima */
+  const gAtiva=desenhaRota(ativo,svg,true);
+  if(ativo.falha){
+    let a,b;
+    if(ativo.falha==='F0'||ativo.falha==='F1'){
+      a=pos[ativo.intervencao]; b=ativo.estudo?pos[ativo.estudo]:{x:pos[ativo.intervencao].x+COLW, y:pos[ativo.intervencao].y};
+    } else {
+      const d=ativo.desfechos[0]; a=d?pos[d]:pos[ativo.estudo]; b=pos['CASA'];
+    }
+    if(a&&b){
+      const x0=a.x+(a.w||8), x1=b.x-9, mx=(x0+x1)/2, my=(a.y+b.y)/2;
+      const corte=el('g',{class:'corte'});
+      corte.appendChild(el('line',{x1:mx-7,y1:my-7,x2:mx+7,y2:my+7}));
+      corte.appendChild(el('line',{x1:mx+7,y1:my-7,x2:mx-7,y2:my+7}));
+      corte.appendChild(el('text',{x:mx, y:my-13, 'text-anchor':'middle'}, ativo.falha));
+      svg.appendChild(corte);
+    }
+  }
+}
+
+/* ---------- trajeto ---------- */
+const PREFIXOS=['APRESENTA','SUGERE','CORRIGE','TESTOU','ELEGIVEL','MEDIU','CONTA_PARA','CUSTA','CONFLITA_COM','JANELA','LIMITE'];
+function renderTrajeto(){
+  const v=D.pacientes[pAtivo].vereditos[vAtivo], box=document.getElementById('trajeto');
+  box.textContent='';
+  const h=document.createElement('p'); h.className='titulo'; h.textContent=v.titulo; box.appendChild(h);
+  const s=document.createElement('p'); s.className='sub';
+  s.textContent=CLASSES[v.classe][0]+(v.falha?' · '+v.falha:'')+' · escore '+v.escore;
+  box.appendChild(s);
+
+  for(const linha of v.trajeto){
+    const row=document.createElement('div'); row.className='linha';
+    let aresta='', corpo=linha;
+    const pref=PREFIXOS.find(p=>linha.startsWith(p));
+    if(pref){aresta=pref; corpo=linha.slice(pref.length).replace(/^\s*/,'');}
+    else if(linha.startsWith('   └─')){row.classList.add('l-indent'); aresta='└'; corpo=linha.replace('   └─','').trim();}
+    else if(linha.startsWith('⚠')){aresta='ressalva'; corpo=linha.slice(1).trim(); row.classList.add('l-nota');}
+    else if(linha.startsWith('⛔')){aresta='ROMPE'; corpo=linha.slice(1).trim(); row.classList.add('l-corte');}
+    else if(linha.startsWith('⚑')){
+      const l=document.createElement('p'); l.className='lapide'; l.textContent=linha.slice(1).trim(); box.appendChild(l); continue;
+    } else {aresta=''; row.classList.add('l-nota');}
+    if(corpo.includes('CASA')&&!row.classList.contains('l-corte')) row.classList.add('l-casa');
+    const a=document.createElement('span'); a.className='ar'; a.textContent=aresta;
+    const c=document.createElement('span'); c.className='co';
+    corpo.split(/(\d[\d,.\s–%]*|HR \S+|RR \S+|OR \S+)/).forEach((frag,i)=>{
+      if(i%2===1){const it=document.createElement('i');it.textContent=frag;c.appendChild(it);}
+      else c.appendChild(document.createTextNode(frag));
+    });
+    row.appendChild(a); row.appendChild(c); box.appendChild(row);
+  }
+}
+
+function render(){
+  [...boxPac.children].forEach((b,i)=>b.setAttribute('aria-pressed', i===pAtivo));
+  renderVereditos(); renderGrafo(); renderTrajeto();
+}
+render();
+</script>

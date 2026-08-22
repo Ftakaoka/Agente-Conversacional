@@ -63,6 +63,21 @@ grafo = Grafo()
 print(relatorio(grafo, navegar(grafo, "P1")))
 ```
 
+## Artefato de palco
+
+`palco.html` é uma página autocontida (sem dependências externas além das fontes)
+com o grafo clicável: escolha o paciente, escolha uma rota, veja o caminho acender
+até CASA — ou o ✕ com o código da lápide no ponto exato em que rompe.
+
+É **gerado**, não editado à mão. Depois de qualquer mudança no grafo:
+
+```bash
+python3 grafos/exportar_palco.py
+```
+
+O template fica em `palco.template.html`; o payload é a saída do próprio motor de
+travessia. Se a página mostra algo, o motor produziu aquilo.
+
 ## Conteúdo
 
 | | |

@@ -8,6 +8,13 @@ grafo — se a frase existe, a aresta existe.
 from .travessia import LAPIDES
 
 ARTIGO = {"alta": "alta", "media": "média", "baixa": "baixa"}
+DIRECAO = {
+    "beneficio": "benefício",
+    "nulo": "nulo",
+    "nao_inferior": "não-inferioridade",
+    "incerto": "incerto",
+    "dano": "dano",
+}
 
 
 def _n(grafo, tipo, id_):
@@ -28,8 +35,9 @@ def explicar(grafo, veredito):
         linhas.append(f"APRESENTA → {_n(grafo,'achado',r.achado)}")
         linhas.append(f"SUGERE ({ARTIGO[r.forca]}) → {_n(grafo,'mecanismo',r.mecanismo)}")
         linhas.append(f"CORRIGE ({ARTIGO[r.plausibilidade]} plausibilidade) ← {intervencao['rotulo']}")
-        linhas.append("TESTOU → ⛔ a aresta não existe. O caminho termina aqui.")
-        linhas.append(f"⚑ {veredito.falhas[0][1]}.")
+        linhas.append("TESTOU → a aresta não existe. O caminho termina aqui.")
+        linhas.append(f"⛔ F0: {veredito.falhas[0][1]}.")
+        linhas.append(f"⚑ {LAPIDES['F0']}")
         linhas.append("Isto não prova que não funciona. Prova que o grafo não tem como levá-la até CASA.")
         return f"{intervencao['rotulo']} — {LAPIDES['F0']}", linhas
 
@@ -55,7 +63,7 @@ def explicar(grafo, veredito):
         ic = f" [IC 95% {m['ic']}]" if m["ic"] not in ("—", "", None) else ""
         linhas.append(
             f"MEDIU {marca} {_n(grafo,'desfecho',m['desfecho'])} "
-            f"({tipo}, {primario}, {m['direcao']}): {m['efeito']}{ic}"
+            f"({tipo}, {primario}, {DIRECAO[m['direcao']]}): {m['efeito']}{ic}"
         )
         if tipo == "substituto":
             linhas.append("   └─ CONTA_PARA → ⛔ desfecho substituto não tem aresta até CASA.")
