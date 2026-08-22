@@ -8,7 +8,9 @@ Triagem pré-operatória cardiovascular para **adultos em cirurgia eletiva não 
 |---|---|
 | [`protocolos/`](protocolos/) | Protocolo consolidado em JSON: algoritmo híbrido ESC 2022 + ACC/AHA 2024, classificador ASA-PS, matriz de exames NICE NG45 |
 | [`motor_triagem/`](motor_triagem/) | Motor Python (sem dependências) que percorre os nós N0–N11 do protocolo |
-| [`tests/`](tests/) | Testes de cenário do motor (`python3 -m unittest discover -s tests`) |
+| [`grafos/`](grafos/) | Grafo tipado de hemostasia/hemoderivados em PBM: do paciente ao nó terminal CASA |
+| [`motor_grafo/`](motor_grafo/) | Motor de travessia do grafo (graph-RAG): recupera por caminho, não por similaridade |
+| [`tests/`](tests/) | Testes de cenário dos dois motores (`python3 -m unittest discover -s tests`) |
 
 ## Motor de triagem
 
@@ -46,6 +48,23 @@ python3 -m motor_triagem --demo   # três cenários prontos: liberado, alto risc
 - RCRI: "cirurgia de alto risco" aproximada pelo porte ESC alto; "creatinina > 2" aproximada por doença renal/diálise.
 - FRAIL ≥ 3 sinaliza fragilidade (avaliação geriátrica); ≥ 4 dispara o nó N10 (alternativas não cirúrgicas).
 - A classe ASA-PS gerada é **provisória** — atribuição final é do anestesiologista.
+
+## Grafo de hemostasia (graph-RAG)
+
+Segundo domínio sobre a mesma arquitetura: conhecimento como dado (`grafos/*.json`),
+motor sem dependências que percorre nós e devolve o **trajeto** junto com o resultado.
+
+A diferença é o que o trajeto significa. No motor de triagem ele é auditoria do
+percurso; no grafo de hemostasia ele **é** a resposta — a recomendação de uma
+intervenção é o caminho `Paciente → Achado → Mecanismo → Intervenção → Estudo →
+Desfecho → CASA`, e a ausência de recomendação é o nome da aresta que quebrou.
+
+```bash
+python3 -m motor_grafo --todos
+```
+
+Detalhes em [`grafos/README.md`](grafos/README.md). Arestas de evidência
+**não auditadas** — ver [`grafos/AUDITORIA.md`](grafos/AUDITORIA.md).
 
 ## Avisos
 

@@ -1,0 +1,1296 @@
+{
+  "meta": {
+    "nome": "Grafo de hemostasia e hemoderivados no contexto de PBM — Vera PreOp.AI",
+    "versao": "0.1.0",
+    "idioma": "pt-BR",
+    "universo": "Paciente adulto em cirurgia ELETIVA (não cardíaca e cardíaca), da indicação ao pós-operatório imediato",
+    "tese": "Nenhuma intervenção entra na recomendação se não existir caminho tipado até o nó terminal CASA (dias vivo e fora do hospital em 30 dias). O cemitério não é uma lista: é o conjunto de caminhos que quebram, e cada quebra tem o nome da aresta que faltou.",
+    "modos_de_falha": [
+      {
+        "id": "F0",
+        "aresta": "TESTOU",
+        "lapide": "Ninguém testou. Só existe a aresta de mecanismo."
+      },
+      {
+        "id": "F1",
+        "aresta": "ELEGIVEL",
+        "lapide": "Foi testado — em outro paciente."
+      },
+      {
+        "id": "F2",
+        "aresta": "CONTA_PARA",
+        "lapide": "Mediu desfecho substituto; não há caminho até CASA."
+      },
+      {
+        "id": "F3",
+        "aresta": "MEDIU",
+        "lapide": "Mediu desfecho duro e deu nulo (ou pior)."
+      },
+      {
+        "id": "F4",
+        "aresta": "CUSTA",
+        "lapide": "O custo adverso consome o ganho."
+      }
+    ],
+    "avisos": [
+      "TODAS as arestas de evidência estão marcadas com auditado=false. Os efeitos e intervalos de confiança foram curados por memória de modelo e DEVEM ser conferidos contra o artigo primário antes de qualquer uso público. Ver grafos/AUDITORIA.md.",
+      "Apoio à decisão e material didático. Não é diretriz nem substitui julgamento clínico.",
+      "A camada de mecanismo é uma simplificação didática deliberada: um achado real costuma sugerir vários mecanismos com pesos que este grafo não estima."
+    ],
+    "modelo": {
+      "logica_de_valor": "Uma intervenção de GANHO só sobrevive com benefício em desfecho duro primário. Uma intervenção de DESESCALADA (retirar uma exposição) sobrevive com não-inferioridade em desfecho duro, porque o ganho está fora do ensaio: recurso escasso poupado, risco evitado, custo zero.",
+      "veredito": [
+        "sobrevivente",
+        "condicional",
+        "cemiterio"
+      ],
+      "regra_casa": "Só desfecho duro tem aresta CONTA_PARA até CASA. Desfecho substituto é beco sem saída, por construção."
+    }
+  },
+  "terminal": {
+    "id": "CASA",
+    "rotulo": "CASA — dias vivo e fora do hospital em 30 dias (DAOH-30)",
+    "descricao": "Nó terminal único. É o desfecho que o paciente contratou. Toda aresta CONTA_PARA aponta para cá, com sinal + ou -."
+  },
+  "achados": [
+    {
+      "id": "A_hb_baixa",
+      "rotulo": "Hemoglobina abaixo do alvo pré-operatório",
+      "coleta": "exame"
+    },
+    {
+      "id": "A_ferritina_baixa",
+      "rotulo": "Ferritina baixa / saturação de transferrina baixa",
+      "coleta": "exame"
+    },
+    {
+      "id": "A_uso_dixa",
+      "rotulo": "Em uso de inibidor direto do fator Xa (rivaroxabana, apixabana)",
+      "coleta": "Vera — reconciliação medicamentosa"
+    },
+    {
+      "id": "A_uso_avk",
+      "rotulo": "Em uso de antagonista da vitamina K (varfarina)",
+      "coleta": "Vera — reconciliação medicamentosa"
+    },
+    {
+      "id": "A_uso_antiagregante",
+      "rotulo": "Em uso de AAS ou inibidor de P2Y12",
+      "coleta": "Vera — reconciliação medicamentosa"
+    },
+    {
+      "id": "A_perda_esperada",
+      "rotulo": "Procedimento de grande porte com perda sanguínea esperada relevante",
+      "coleta": "Vera — porte cirúrgico"
+    },
+    {
+      "id": "A_cec",
+      "rotulo": "Circulação extracorpórea prevista",
+      "coleta": "programação cirúrgica"
+    },
+    {
+      "id": "A_fibrinogenio_baixo",
+      "rotulo": "Fibrinogênio < 1,5 g/L (ou FIBTEM reduzido)",
+      "coleta": "exame intraoperatório"
+    },
+    {
+      "id": "A_sangramento_difuso",
+      "rotulo": "Sangramento microvascular difuso, sem fonte cirúrgica identificável",
+      "coleta": "observação intraoperatória"
+    },
+    {
+      "id": "A_drc",
+      "rotulo": "Doença renal crônica",
+      "coleta": "Vera — anamnese"
+    },
+    {
+      "id": "A_dac",
+      "rotulo": "Doença arterial coronariana estabelecida",
+      "coleta": "Vera — anamnese"
+    }
+  ],
+  "mecanismos": [
+    {
+      "id": "M_hiperfibrinolise",
+      "rotulo": "Hiperfibrinólise perioperatória",
+      "nota": "Ativação do plasminogênio pelo trauma cirúrgico; alvo do antifibrinolítico."
+    },
+    {
+      "id": "M_hipofibrinogenemia",
+      "rotulo": "Hipofibrinogenemia adquirida",
+      "nota": "Primeiro fator a atingir nível crítico no sangramento maior."
+    },
+    {
+      "id": "M_dilucional",
+      "rotulo": "Coagulopatia dilucional",
+      "nota": "Reposição volêmica e perda diluem fatores e plaquetas."
+    },
+    {
+      "id": "M_def_fatores_vitk",
+      "rotulo": "Deficiência funcional de fatores vitamina-K dependentes",
+      "nota": "Efeito farmacológico do AVK."
+    },
+    {
+      "id": "M_anti_xa",
+      "rotulo": "Inibição farmacológica do fator Xa",
+      "nota": "Efeito do DOAC anti-Xa; NÃO é deficiência de fator."
+    },
+    {
+      "id": "M_disf_plaquetaria",
+      "rotulo": "Disfunção plaquetária adquirida",
+      "nota": "Antiagregante, uremia, CEC."
+    },
+    {
+      "id": "M_anemia_ferropriva",
+      "rotulo": "Anemia por deficiência de ferro",
+      "nota": "Pilar 1 do PBM: causa tratável antes da cirurgia."
+    },
+    {
+      "id": "M_baixa_massa",
+      "rotulo": "Baixa massa eritrocitária / reserva reduzida",
+      "nota": "Determina a tolerância à perda."
+    },
+    {
+      "id": "M_perda_mecanica",
+      "rotulo": "Perda sanguínea mecânica do campo cirúrgico",
+      "nota": "Pilar 2: não é coagulopatia, é hemostasia cirúrgica e recuperação de sangue."
+    }
+  ],
+  "intervencoes": [
+    {
+      "id": "I_txa",
+      "rotulo": "Ácido tranexâmico",
+      "classe": "droga",
+      "janela_h": 3,
+      "sus": true,
+      "custo_ordem": "R$ (unidades)",
+      "nota": "Efeito dependente do tempo em hemorragia aguda; em cirurgia eletiva a administração é programada.",
+      "logica_de_valor": "ganho",
+      "janela_contexto": "hemorragia aguda"
+    },
+    {
+      "id": "I_ferro_ev",
+      "rotulo": "Ferro endovenoso",
+      "classe": "droga",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$$ (centenas)",
+      "nota": "Exige antecedência: o efeito eritropoiético leva semanas.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_epo",
+      "rotulo": "Eritropoetina",
+      "classe": "droga",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$$$",
+      "nota": "Uso off-label perioperatório; sinal trombótico em populações oncológicas.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_ddavp",
+      "rotulo": "Desmopressina (DDAVP)",
+      "classe": "droga",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$$",
+      "nota": "Alvo estreito: disfunção plaquetária urêmica e doença de von Willebrand tipo 1.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_fibrinogenio",
+      "rotulo": "Concentrado de fibrinogênio",
+      "classe": "hemoderivado",
+      "janela_h": null,
+      "sus": false,
+      "custo_ordem": "R$$$$ (milhares por dose)",
+      "nota": "Hemoderivado industrializado; indisponível na maioria dos hospitais públicos brasileiros.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_ccp",
+      "rotulo": "Concentrado de complexo protrombínico (CCP 4F)",
+      "classe": "hemoderivado",
+      "janela_h": null,
+      "sus": false,
+      "custo_ordem": "R$$$$",
+      "nota": "Indicação sólida = reversão de AVK. Indicação frágil = hemostático empírico.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_andexanet",
+      "rotulo": "Andexanet alfa",
+      "classe": "hemoderivado",
+      "janela_h": null,
+      "sus": false,
+      "custo_ordem": "R$$$$$",
+      "nota": "Antídoto específico anti-Xa; praticamente indisponível no Brasil. Nó de equidade.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_rfviia",
+      "rotulo": "Fator VIIa recombinante (off-label)",
+      "classe": "hemoderivado",
+      "janela_h": null,
+      "sus": false,
+      "custo_ordem": "R$$$$$",
+      "nota": "Resgate. Sinal consistente de tromboembolismo arterial em meta-análises.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_crio",
+      "rotulo": "Crioprecipitado",
+      "classe": "hemocomponente",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$$",
+      "nota": "Fonte de fibrinogênio disponível no SUS.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_plasma",
+      "rotulo": "Plasma fresco congelado",
+      "classe": "hemocomponente",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$$",
+      "nota": "Uso profilático para INR levemente alterado é o alvo clássico de desimplementação.",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_plaquetas",
+      "rotulo": "Concentrado de plaquetas",
+      "classe": "hemocomponente",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$$$",
+      "nota": "",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_ch",
+      "rotulo": "Concentrado de hemácias",
+      "classe": "hemocomponente",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$$",
+      "nota": "",
+      "logica_de_valor": "ganho"
+    },
+    {
+      "id": "I_restritiva",
+      "rotulo": "Estratégia transfusional restritiva",
+      "classe": "estrategia",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$ 0 (economiza)",
+      "nota": "A intervenção é NÃO transfundir. Custa zero e tem a melhor evidência do grafo.",
+      "logica_de_valor": "desescalada"
+    },
+    {
+      "id": "I_cell_salvage",
+      "rotulo": "Recuperação intraoperatória de sangue (cell salvage)",
+      "classe": "tecnica",
+      "janela_h": null,
+      "sus": true,
+      "custo_ordem": "R$$$",
+      "nota": "",
+      "logica_de_valor": "ganho"
+    }
+  ],
+  "desfechos": [
+    {
+      "id": "D_mort30",
+      "rotulo": "Mortalidade em 28–30 dias",
+      "tipo": "duro"
+    },
+    {
+      "id": "D_mace",
+      "rotulo": "Composto morte / IAM / AVC / nova diálise",
+      "tipo": "duro"
+    },
+    {
+      "id": "D_sangr_maior",
+      "rotulo": "Sangramento maior com significado clínico",
+      "tipo": "duro"
+    },
+    {
+      "id": "D_morte_incap",
+      "rotulo": "Morte ou incapacidade funcional",
+      "tipo": "duro"
+    },
+    {
+      "id": "D_readmissao",
+      "rotulo": "Readmissão hospitalar",
+      "tipo": "duro"
+    },
+    {
+      "id": "D_unidades",
+      "rotulo": "Unidades de hemocomponente transfundidas",
+      "tipo": "substituto"
+    },
+    {
+      "id": "D_exposicao",
+      "rotulo": "Exposição a transfusão alogênica (sim/não)",
+      "tipo": "substituto"
+    },
+    {
+      "id": "D_perda_ml",
+      "rotulo": "Perda sanguínea estimada (mL)",
+      "tipo": "substituto"
+    },
+    {
+      "id": "D_hb_pos",
+      "rotulo": "Hemoglobina pós-operatória",
+      "tipo": "substituto"
+    },
+    {
+      "id": "D_tev",
+      "rotulo": "Evento tromboembólico",
+      "tipo": "adverso"
+    },
+    {
+      "id": "D_convulsao",
+      "rotulo": "Convulsão",
+      "tipo": "adverso"
+    },
+    {
+      "id": "D_tromb_arterial",
+      "rotulo": "Tromboembolismo arterial",
+      "tipo": "adverso"
+    }
+  ],
+  "conta_para": [
+    {
+      "de": "D_mort30",
+      "sinal": "+"
+    },
+    {
+      "de": "D_mace",
+      "sinal": "+"
+    },
+    {
+      "de": "D_sangr_maior",
+      "sinal": "+"
+    },
+    {
+      "de": "D_morte_incap",
+      "sinal": "+"
+    },
+    {
+      "de": "D_readmissao",
+      "sinal": "+"
+    },
+    {
+      "de": "D_tev",
+      "sinal": "-"
+    },
+    {
+      "de": "D_convulsao",
+      "sinal": "-"
+    },
+    {
+      "de": "D_tromb_arterial",
+      "sinal": "-"
+    }
+  ],
+  "sugere": [
+    {
+      "de": "A_perda_esperada",
+      "para": "M_hiperfibrinolise",
+      "forca": "alta"
+    },
+    {
+      "de": "A_perda_esperada",
+      "para": "M_perda_mecanica",
+      "forca": "alta"
+    },
+    {
+      "de": "A_perda_esperada",
+      "para": "M_dilucional",
+      "forca": "media"
+    },
+    {
+      "de": "A_cec",
+      "para": "M_hiperfibrinolise",
+      "forca": "alta"
+    },
+    {
+      "de": "A_cec",
+      "para": "M_disf_plaquetaria",
+      "forca": "alta"
+    },
+    {
+      "de": "A_cec",
+      "para": "M_hipofibrinogenemia",
+      "forca": "media"
+    },
+    {
+      "de": "A_fibrinogenio_baixo",
+      "para": "M_hipofibrinogenemia",
+      "forca": "alta"
+    },
+    {
+      "de": "A_sangramento_difuso",
+      "para": "M_hiperfibrinolise",
+      "forca": "media"
+    },
+    {
+      "de": "A_sangramento_difuso",
+      "para": "M_hipofibrinogenemia",
+      "forca": "media"
+    },
+    {
+      "de": "A_sangramento_difuso",
+      "para": "M_disf_plaquetaria",
+      "forca": "media"
+    },
+    {
+      "de": "A_uso_avk",
+      "para": "M_def_fatores_vitk",
+      "forca": "alta"
+    },
+    {
+      "de": "A_uso_dixa",
+      "para": "M_anti_xa",
+      "forca": "alta"
+    },
+    {
+      "de": "A_uso_antiagregante",
+      "para": "M_disf_plaquetaria",
+      "forca": "alta"
+    },
+    {
+      "de": "A_drc",
+      "para": "M_disf_plaquetaria",
+      "forca": "media"
+    },
+    {
+      "de": "A_ferritina_baixa",
+      "para": "M_anemia_ferropriva",
+      "forca": "alta"
+    },
+    {
+      "de": "A_hb_baixa",
+      "para": "M_baixa_massa",
+      "forca": "alta"
+    },
+    {
+      "de": "A_hb_baixa",
+      "para": "M_anemia_ferropriva",
+      "forca": "media"
+    }
+  ],
+  "corrige": [
+    {
+      "de": "I_txa",
+      "para": "M_hiperfibrinolise",
+      "plausibilidade": "alta"
+    },
+    {
+      "de": "I_fibrinogenio",
+      "para": "M_hipofibrinogenemia",
+      "plausibilidade": "alta"
+    },
+    {
+      "de": "I_crio",
+      "para": "M_hipofibrinogenemia",
+      "plausibilidade": "alta"
+    },
+    {
+      "de": "I_plasma",
+      "para": "M_dilucional",
+      "plausibilidade": "media"
+    },
+    {
+      "de": "I_plasma",
+      "para": "M_def_fatores_vitk",
+      "plausibilidade": "media"
+    },
+    {
+      "de": "I_ccp",
+      "para": "M_def_fatores_vitk",
+      "plausibilidade": "alta"
+    },
+    {
+      "de": "I_ccp",
+      "para": "M_dilucional",
+      "plausibilidade": "baixa"
+    },
+    {
+      "de": "I_ccp",
+      "para": "M_anti_xa",
+      "plausibilidade": "baixa"
+    },
+    {
+      "de": "I_andexanet",
+      "para": "M_anti_xa",
+      "plausibilidade": "alta"
+    },
+    {
+      "de": "I_ddavp",
+      "para": "M_disf_plaquetaria",
+      "plausibilidade": "media"
+    },
+    {
+      "de": "I_plaquetas",
+      "para": "M_disf_plaquetaria",
+      "plausibilidade": "media"
+    },
+    {
+      "de": "I_rfviia",
+      "para": "M_dilucional",
+      "plausibilidade": "baixa"
+    },
+    {
+      "de": "I_ferro_ev",
+      "para": "M_anemia_ferropriva",
+      "plausibilidade": "alta"
+    },
+    {
+      "de": "I_epo",
+      "para": "M_baixa_massa",
+      "plausibilidade": "media"
+    },
+    {
+      "de": "I_ch",
+      "para": "M_baixa_massa",
+      "plausibilidade": "alta"
+    },
+    {
+      "de": "I_restritiva",
+      "para": "M_baixa_massa",
+      "plausibilidade": "alta"
+    },
+    {
+      "de": "I_cell_salvage",
+      "para": "M_perda_mecanica",
+      "plausibilidade": "alta"
+    }
+  ],
+  "estudos": [
+    {
+      "id": "POISE3-TXA",
+      "rotulo": "POISE-3 (braço ácido tranexâmico)",
+      "ano": 2022,
+      "citacao": "Devereaux PJ et al. Tranexamic acid in patients undergoing noncardiac surgery. N Engl J Med 2022.",
+      "n": 9535,
+      "populacao": {
+        "descricao": "Cirurgia não cardíaca, ≥45 anos, com doença cardiovascular ou fatores de risco",
+        "contextos": [
+          "cirurgia_eletiva_nao_cardiaca"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_txa",
+          "dose": "1 g IV na indução + 1 g ao fim da cirurgia"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "ATACAS",
+      "rotulo": "ATACAS",
+      "ano": 2017,
+      "citacao": "Myles PS et al. Tranexamic acid in patients undergoing coronary-artery surgery. N Engl J Med 2017.",
+      "n": 4631,
+      "populacao": {
+        "descricao": "Cirurgia de revascularização miocárdica, risco aumentado de complicações",
+        "contextos": [
+          "cirurgia_cardiaca"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_txa",
+          "dose": "100 mg/kg, reduzida a 50 mg/kg durante o ensaio"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "FIBRES",
+      "rotulo": "FIBRES",
+      "ano": 2019,
+      "citacao": "Callum J et al. Effect of fibrinogen concentrate vs cryoprecipitate on blood component transfusion after cardiac surgery. JAMA 2019.",
+      "n": 735,
+      "populacao": {
+        "descricao": "Cirurgia cardíaca com sangramento e hipofibrinogenemia adquirida",
+        "contextos": [
+          "cirurgia_cardiaca"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_fibrinogenio",
+          "dose": "4 g vs 10 U de crioprecipitado"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "TRICS-III",
+      "rotulo": "TRICS III",
+      "ano": 2017,
+      "citacao": "Mazer CD et al. Restrictive or liberal red-cell transfusion for cardiac surgery. N Engl J Med 2017.",
+      "n": 5243,
+      "populacao": {
+        "descricao": "Cirurgia cardíaca com CEC, risco moderado a alto (EuroSCORE I ≥ 6)",
+        "contextos": [
+          "cirurgia_cardiaca"
+        ],
+        "transferivel_para": [
+          {
+            "contexto": "cirurgia_eletiva_nao_cardiaca",
+            "ressalva": "A estratégia restritiva é o achado mais consistente do PBM em populações distintas, mas TRICS III em si recrutou cirurgia cardíaca."
+          }
+        ]
+      },
+      "testou": [
+        {
+          "intervencao": "I_restritiva",
+          "dose": "gatilho Hb < 7,5 g/dL vs < 9,5 g/dL"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "FOCUS",
+      "rotulo": "FOCUS",
+      "ano": 2011,
+      "citacao": "Carson JL et al. Liberal or restrictive transfusion in high-risk patients after hip surgery. N Engl J Med 2011.",
+      "n": 2016,
+      "populacao": {
+        "descricao": "≥50 anos, cirurgia de fratura de quadril, com doença cardiovascular ou fatores de risco",
+        "contextos": [
+          "ortopedica_quadril_fratura"
+        ],
+        "transferivel_para": [
+          {
+            "contexto": "ortopedica_grande_porte",
+            "ressalva": "FOCUS recrutou fratura de quadril — cirurgia de urgência em idosos. A transposição para artroplastia eletiva é plausível, não testada."
+          }
+        ]
+      },
+      "testou": [
+        {
+          "intervencao": "I_restritiva",
+          "dose": "gatilho Hb < 8 g/dL ou sintomas vs < 10 g/dL"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "MINT",
+      "rotulo": "MINT",
+      "ano": 2023,
+      "citacao": "Carson JL et al. Restrictive or liberal transfusion strategy in myocardial infarction and anemia. N Engl J Med 2023.",
+      "n": 3504,
+      "populacao": {
+        "descricao": "Infarto agudo do miocárdio com anemia (Hb < 10 g/dL)",
+        "contextos": [
+          "iam_com_anemia"
+        ],
+        "transferivel_para": [
+          {
+            "contexto": "cirurgia_eletiva_nao_cardiaca",
+            "ressalva": "Não é população cirúrgica. Entra no grafo porque é ONDE O PADRÃO RESTRITIVO TRINCA: no paciente com isquemia miocárdica ativa o sinal apontou para o lado liberal."
+          }
+        ]
+      },
+      "testou": [
+        {
+          "intervencao": "I_restritiva",
+          "dose": "gatilho Hb < 8 g/dL vs < 10 g/dL"
+        }
+      ],
+      "papel": "limite"
+    },
+    {
+      "id": "PREVENTT",
+      "rotulo": "PREVENTT",
+      "ano": 2020,
+      "citacao": "Richards T et al. Preoperative intravenous iron to treat anaemia before major abdominal surgery. Lancet 2020.",
+      "n": 487,
+      "populacao": {
+        "descricao": "Anemia antes de cirurgia abdominal maior eletiva",
+        "contextos": [
+          "cirurgia_eletiva_nao_cardiaca",
+          "abdominal_maior"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_ferro_ev",
+          "dose": "carboximaltose férrica 10–42 dias antes (mediana ~15 dias)"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "COCHRANE-SALVAGE",
+      "rotulo": "Revisão Cochrane — cell salvage",
+      "ano": 2010,
+      "citacao": "Carless PA et al. Cell salvage for minimising perioperative allogeneic blood transfusion. Cochrane Database Syst Rev.",
+      "n": null,
+      "populacao": {
+        "descricao": "Cirurgia eletiva cardíaca e ortopédica",
+        "contextos": [
+          "cirurgia_cardiaca",
+          "ortopedica_grande_porte",
+          "cirurgia_eletiva_nao_cardiaca"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_cell_salvage",
+          "dose": "recuperação intraoperatória"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "CRASH-2",
+      "rotulo": "CRASH-2",
+      "ano": 2010,
+      "citacao": "CRASH-2 collaborators. Effects of tranexamic acid on death, vascular occlusive events, and blood transfusion in trauma patients with significant haemorrhage. Lancet 2010.",
+      "n": 20211,
+      "populacao": {
+        "descricao": "Trauma com hemorragia significativa ou risco dela, dentro de 8 h",
+        "contextos": [
+          "trauma"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_txa",
+          "dose": "1 g em 10 min + 1 g em 8 h"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "CRASH-3",
+      "rotulo": "CRASH-3",
+      "ano": 2019,
+      "citacao": "CRASH-3 trial collaborators. Effects of tranexamic acid on death, disability, vascular occlusive events in traumatic brain injury. Lancet 2019.",
+      "n": 12737,
+      "populacao": {
+        "descricao": "Traumatismo cranioencefálico dentro de 3 h",
+        "contextos": [
+          "tce"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_txa",
+          "dose": "1 g + 1 g em 8 h"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "WOMAN",
+      "rotulo": "WOMAN",
+      "ano": 2017,
+      "citacao": "WOMAN Trial Collaborators. Effect of early tranexamic acid administration on mortality in post-partum haemorrhage. Lancet 2017.",
+      "n": 20060,
+      "populacao": {
+        "descricao": "Hemorragia pós-parto",
+        "contextos": [
+          "obstetrica"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_txa",
+          "dose": "1 g IV, repetível"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "HALT-IT",
+      "rotulo": "HALT-IT",
+      "ano": 2020,
+      "citacao": "HALT-IT Trial Collaborators. Effects of a high-dose 24-h infusion of tranexamic acid on death and thromboembolic events in gastrointestinal bleeding. Lancet 2020.",
+      "n": 12009,
+      "populacao": {
+        "descricao": "Hemorragia digestiva alta ou baixa significativa",
+        "contextos": [
+          "hemorragia_digestiva"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_txa",
+          "dose": "4 g de ataque + 4 g em 24 h (dose alta)"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "PROCOAG",
+      "rotulo": "PROCOAG",
+      "ano": 2023,
+      "citacao": "Bouzat P et al. Effect of 4-factor prothrombin complex concentrate on blood product use in trauma patients with major bleeding. JAMA 2023.",
+      "n": 324,
+      "populacao": {
+        "descricao": "Trauma com risco de transfusão maciça",
+        "contextos": [
+          "trauma"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_ccp",
+          "dose": "25 UI/kg, empírico"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "CRYOSTAT-2",
+      "rotulo": "CRYOSTAT-2",
+      "ano": 2023,
+      "citacao": "Davenport R et al. Early and empirical high-dose cryoprecipitate for hemorrhage after traumatic injury. JAMA 2023.",
+      "n": 1604,
+      "populacao": {
+        "descricao": "Trauma com hemorragia maior ativando protocolo de transfusão maciça",
+        "contextos": [
+          "trauma"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_crio",
+          "dose": "3 pools (~6 g de fibrinogênio) empírico precoce"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "PATCH-ICH",
+      "rotulo": "PATCH (hemorragia intracerebral)",
+      "ano": 2016,
+      "citacao": "Baharoglu MI et al. Platelet transfusion versus standard care after acute stroke due to spontaneous cerebral haemorrhage associated with antiplatelet therapy. Lancet 2016.",
+      "n": 190,
+      "populacao": {
+        "descricao": "Hemorragia intracerebral espontânea em uso de antiagregante",
+        "contextos": [
+          "hemorragia_intracraniana"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_plaquetas",
+          "dose": "transfusão de plaquetas em até 6 h"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "PROPPR",
+      "rotulo": "PROPPR",
+      "ano": 2015,
+      "citacao": "Holcomb JB et al. Transfusion of plasma, platelets, and red blood cells in a 1:1:1 vs a 1:1:2 ratio. JAMA 2015.",
+      "n": 680,
+      "populacao": {
+        "descricao": "Trauma com previsão de transfusão maciça",
+        "contextos": [
+          "trauma"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_plasma",
+          "dose": "razão fixa 1:1:1 vs 1:1:2"
+        }
+      ],
+      "papel": "principal"
+    },
+    {
+      "id": "PLASMA-PROFILATICO",
+      "rotulo": "Plasma profilático para INR pouco alterado (revisões sistemáticas)",
+      "ano": 2021,
+      "citacao": "Corpo de revisões sistemáticas e estudos observacionais; sem ECR de desfecho duro que sustente a prática.",
+      "n": null,
+      "populacao": {
+        "descricao": "Pacientes sem sangramento, com INR levemente alterado, antes de procedimento invasivo",
+        "contextos": [
+          "cirurgia_eletiva_nao_cardiaca",
+          "cirurgia_cardiaca"
+        ],
+        "transferivel_para": []
+      },
+      "testou": [
+        {
+          "intervencao": "I_plasma",
+          "dose": "profilático pré-procedimento"
+        }
+      ],
+      "papel": "principal"
+    }
+  ],
+  "mediu": [
+    {
+      "estudo": "POISE3-TXA",
+      "desfecho": "D_sangr_maior",
+      "primario": true,
+      "direcao": "beneficio",
+      "efeito": "9,1% vs 11,7% — HR 0,76",
+      "ic": "0,67–0,87",
+      "nota": "Composto de sangramento com significado clínico em 30 dias.",
+      "auditado": false
+    },
+    {
+      "estudo": "POISE3-TXA",
+      "desfecho": "D_mace",
+      "primario": true,
+      "direcao": "incerto",
+      "efeito": "14,2% vs 13,9% — HR 1,02",
+      "ic": "0,92–1,14",
+      "nota": "Co-primário de segurança: NÃO atingiu a margem de não-inferioridade (1,125). É a ressalva honesta da droga.",
+      "auditado": false
+    },
+    {
+      "estudo": "ATACAS",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "nao_inferior",
+      "efeito": "16,7% vs 18,1% — RR 0,92",
+      "ic": "0,81–1,05",
+      "nota": "Composto morte/evento trombótico em 30 dias; não-inferioridade atingida.",
+      "auditado": false
+    },
+    {
+      "estudo": "ATACAS",
+      "desfecho": "D_exposicao",
+      "primario": false,
+      "direcao": "beneficio",
+      "efeito": "37,9% vs 54,7%",
+      "ic": "—",
+      "nota": "Redução expressiva — mas é desfecho substituto.",
+      "auditado": false
+    },
+    {
+      "estudo": "ATACAS",
+      "desfecho": "D_convulsao",
+      "primario": false,
+      "direcao": "dano",
+      "efeito": "0,7% vs 0,1%",
+      "ic": "—",
+      "nota": "O preço conhecido do TXA em dose alta com CEC.",
+      "auditado": false
+    },
+    {
+      "estudo": "FIBRES",
+      "desfecho": "D_unidades",
+      "primario": true,
+      "direcao": "nao_inferior",
+      "efeito": "razão 0,83 — não-inferior ao crioprecipitado",
+      "ic": "0,72–0,94",
+      "nota": "Desfecho primário SUBSTITUTO. O ensaio não foi dimensionado para desfecho duro.",
+      "auditado": false
+    },
+    {
+      "estudo": "TRICS-III",
+      "desfecho": "D_mace",
+      "primario": true,
+      "direcao": "nao_inferior",
+      "efeito": "11,4% (restritivo) vs 12,5% — diferença −1,11 pp",
+      "ic": "−2,93 a 0,72",
+      "nota": "Não-inferioridade atingida: transfundir menos não custou desfecho.",
+      "auditado": false
+    },
+    {
+      "estudo": "FOCUS",
+      "desfecho": "D_morte_incap",
+      "primario": true,
+      "direcao": "nao_inferior",
+      "efeito": "34,7% (restritivo) vs 35,2% — OR 1,01",
+      "ic": "0,84–1,22",
+      "nota": "Morte ou incapacidade de caminhar aos 60 dias.",
+      "auditado": false
+    },
+    {
+      "estudo": "MINT",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "incerto",
+      "efeito": "16,9% (restritivo) vs 14,5% (liberal) — RR 1,15",
+      "ic": "0,99–1,34",
+      "nota": "IAM ou morte em 30 dias. Sinal numérico a favor do liberal, sem significância. O limite do padrão restritivo.",
+      "auditado": false
+    },
+    {
+      "estudo": "PREVENTT",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "nulo",
+      "efeito": "co-primário morte ou transfusão até 30 dias — sem diferença",
+      "ic": "—",
+      "nota": "O ferro EV pré-operatório NÃO reduziu transfusão nem morte neste ensaio. A prática é mais confiante que o dado.",
+      "auditado": false
+    },
+    {
+      "estudo": "PREVENTT",
+      "desfecho": "D_readmissao",
+      "primario": false,
+      "direcao": "beneficio",
+      "efeito": "menos readmissões no grupo ferro",
+      "ic": "—",
+      "nota": "Desfecho SECUNDÁRIO, gerador de hipótese — mas é o único caminho do ferro até CASA.",
+      "auditado": false
+    },
+    {
+      "estudo": "PREVENTT",
+      "desfecho": "D_hb_pos",
+      "primario": false,
+      "direcao": "beneficio",
+      "efeito": "Hb maior em 8 semanas e 6 meses",
+      "ic": "—",
+      "nota": "Substituto.",
+      "auditado": false
+    },
+    {
+      "estudo": "COCHRANE-SALVAGE",
+      "desfecho": "D_exposicao",
+      "primario": true,
+      "direcao": "beneficio",
+      "efeito": "redução da exposição a sangue alogênico",
+      "ic": "—",
+      "nota": "Substituto. Não há evidência de desfecho duro.",
+      "auditado": false
+    },
+    {
+      "estudo": "CRASH-2",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "beneficio",
+      "efeito": "14,5% vs 16,0% — RR 0,91",
+      "ic": "0,85–0,97",
+      "nota": "Benefício concentrado na administração < 3 h; administração tardia foi associada a dano.",
+      "auditado": false
+    },
+    {
+      "estudo": "CRASH-3",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "incerto",
+      "efeito": "18,5% vs 19,8% — RR 0,94; em TCE leve-moderado RR 0,78",
+      "ic": "0,86–1,02 / 0,64–0,95",
+      "nota": "Nulo no geral, benefício no subgrupo pré-especificado leve-moderado.",
+      "auditado": false
+    },
+    {
+      "estudo": "WOMAN",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "beneficio",
+      "efeito": "morte por sangramento 1,5% vs 1,9% — RR 0,81",
+      "ic": "0,65–1,00",
+      "nota": "Tratadas em até 3 h: RR 0,69 (0,52–0,91).",
+      "auditado": false
+    },
+    {
+      "estudo": "HALT-IT",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "nulo",
+      "efeito": "morte por sangramento em 5 dias 3,7% vs 3,8% — RR 0,99",
+      "ic": "0,82–1,18",
+      "nota": "Mesma droga do CRASH-2, desfecho duro, população diferente: nulo.",
+      "auditado": false
+    },
+    {
+      "estudo": "HALT-IT",
+      "desfecho": "D_tev",
+      "primario": false,
+      "direcao": "dano",
+      "efeito": "0,8% vs 0,4% — RR 1,85",
+      "ic": "1,15–2,98",
+      "nota": "TVP/TEP.",
+      "auditado": false
+    },
+    {
+      "estudo": "PROCOAG",
+      "desfecho": "D_unidades",
+      "primario": true,
+      "direcao": "nulo",
+      "efeito": "mediana 12 vs 11 U em 24 h — diferença 0,2",
+      "ic": "−2,99 a 3,33",
+      "nota": "Desfecho primário SUBSTITUTO — e nem esse melhorou.",
+      "auditado": false
+    },
+    {
+      "estudo": "PROCOAG",
+      "desfecho": "D_tev",
+      "primario": false,
+      "direcao": "dano",
+      "efeito": "35% vs 24% — diferença 11 pp",
+      "ic": "1–21",
+      "nota": "Eventos tromboembólicos.",
+      "auditado": false
+    },
+    {
+      "estudo": "CRYOSTAT-2",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "nulo",
+      "efeito": "25,3% vs 26,1% — OR 0,96",
+      "ic": "0,75–1,23",
+      "nota": "Mediu o desfecho certo, no paciente certo, e não funcionou.",
+      "auditado": false
+    },
+    {
+      "estudo": "PATCH-ICH",
+      "desfecho": "D_morte_incap",
+      "primario": true,
+      "direcao": "dano",
+      "efeito": "morte ou dependência em 3 meses — OR 2,05",
+      "ic": "1,18–3,56",
+      "nota": "Transfundir plaquetas piorou o desfecho.",
+      "auditado": false
+    },
+    {
+      "estudo": "PROPPR",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "nulo",
+      "efeito": "24 h: 12,7% vs 17,0% (p=0,12); 30 d: 22,4% vs 26,1% (p=0,26)",
+      "ic": "—",
+      "nota": "Primários não atingidos; morte por exsanguinação em 24 h menor (9,2% vs 14,6%).",
+      "auditado": false
+    },
+    {
+      "estudo": "PLASMA-PROFILATICO",
+      "desfecho": "D_perda_ml",
+      "primario": true,
+      "direcao": "nulo",
+      "efeito": "sem redução consistente de sangramento",
+      "ic": "—",
+      "nota": "Não existe desfecho duro favorável. O plasma profilático não tem caminho até CASA em nenhuma população deste grafo.",
+      "auditado": false
+    }
+  ],
+  "custa": [
+    {
+      "intervencao": "I_txa",
+      "desfecho": "D_convulsao",
+      "fonte": "ATACAS",
+      "efeito": "0,7% vs 0,1% em cirurgia cardíaca com dose alta"
+    },
+    {
+      "intervencao": "I_txa",
+      "desfecho": "D_tev",
+      "fonte": "HALT-IT",
+      "efeito": "RR 1,85 (1,15–2,98) em hemorragia digestiva com dose alta em 24 h"
+    },
+    {
+      "intervencao": "I_ccp",
+      "desfecho": "D_tev",
+      "fonte": "PROCOAG",
+      "efeito": "35% vs 24% no uso empírico em trauma"
+    },
+    {
+      "intervencao": "I_plaquetas",
+      "desfecho": "D_morte_incap",
+      "fonte": "PATCH-ICH",
+      "efeito": "OR 2,05 (1,18–3,56) na HIC sob antiagregante"
+    },
+    {
+      "intervencao": "I_rfviia",
+      "desfecho": "D_tromb_arterial",
+      "fonte": "meta-análises de uso off-label",
+      "efeito": "aumento consistente de eventos arteriais"
+    },
+    {
+      "intervencao": "I_epo",
+      "desfecho": "D_tev",
+      "fonte": "corpo de evidência oncológica e perioperatória",
+      "efeito": "sinal trombótico"
+    }
+  ],
+  "conflita_com": [
+    {
+      "a": "CRASH-2",
+      "b": "HALT-IT",
+      "eixo": "Mesma droga (TXA), mesmo tipo de desfecho (morte por sangramento), resultados opostos. A variável que muda não é a droga — é a população e o mecanismo do sangramento. Esta é a aresta que ensina a aula inteira."
+    },
+    {
+      "a": "TRICS-III",
+      "b": "MINT",
+      "eixo": "A estratégia restritiva é segura em cirurgia cardíaca, mas o sinal se inverte no miocárdio isquêmico agudo. Gatilho não é lei."
+    },
+    {
+      "a": "POISE3-TXA",
+      "b": "ATACAS",
+      "eixo": "TXA reduz sangramento nas duas populações; a não-inferioridade cardiovascular foi atingida em ATACAS e NÃO em POISE-3."
+    }
+  ],
+  "pacientes": [
+    {
+      "id": "P1",
+      "nome": "Dona Cleusa, 68 anos",
+      "caso": "Artroplastia total de joelho eletiva. Hb 10,4 g/dL, ferritina 18 ng/mL, saturação de transferrina 14%. Sem anticoagulante, sem antiagregante. Hipertensa.",
+      "meta": "Voltar para casa em três dias e andar até a cozinha.",
+      "contextos": [
+        "cirurgia_eletiva_nao_cardiaca",
+        "ortopedica_grande_porte"
+      ],
+      "achados": [
+        "A_hb_baixa",
+        "A_ferritina_baixa",
+        "A_perda_esperada"
+      ]
+    },
+    {
+      "id": "P2",
+      "nome": "Sr. Aldo, 74 anos",
+      "caso": "Colectomia direita eletiva por neoplasia. Hb 9,8 g/dL. Fibrilação atrial em rivaroxabana. DRC estágio 3.",
+      "meta": "Operar, não sangrar, não trombosar, e não passar por UTI.",
+      "contextos": [
+        "cirurgia_eletiva_nao_cardiaca",
+        "abdominal_maior"
+      ],
+      "achados": [
+        "A_hb_baixa",
+        "A_uso_dixa",
+        "A_perda_esperada",
+        "A_drc"
+      ]
+    },
+    {
+      "id": "P3",
+      "nome": "Sra. Ivone, 62 anos",
+      "caso": "Troca valvar aórtica eletiva com CEC. No intraoperatório, sangramento microvascular difuso após a saída de CEC; fibrinogênio 1,3 g/L e Hb 8,1 g/dL.",
+      "meta": "Sair da sala sem reexploração e extubar no mesmo dia.",
+      "contextos": [
+        "cirurgia_cardiaca"
+      ],
+      "achados": [
+        "A_hb_baixa",
+        "A_cec",
+        "A_sangramento_difuso",
+        "A_fibrinogenio_baixo",
+        "A_perda_esperada"
+      ]
+    }
+  ]
+}
