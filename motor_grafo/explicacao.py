@@ -75,6 +75,13 @@ def explicar(grafo, veredito):
             linhas.append(f"⛔ {codigo}: {motivo}.")
             linhas.append(f"⚑ {LAPIDES[codigo]}")
 
+    for m in veredito.nao_verificadas:
+        linhas.append(
+            f"MEDIU ✎ {_n(grafo,'desfecho',m['desfecho'])} "
+            f"({grafo.desfechos[m['desfecho']]['tipo']}, não conferido): {m['efeito']} "
+            f"— NÃO CONSTA DO RESUMO indexado; exibido, mas fora da pontuação."
+        )
+
     for res in veredito.ressalvas:
         linhas.append(f"⚠ {res}")
 

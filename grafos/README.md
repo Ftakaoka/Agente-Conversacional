@@ -91,10 +91,26 @@ travessia. Se a página mostra algo, o motor produziu aquilo.
 
 ## Estado da evidência
 
-**Todas as arestas `MEDIU` estão com `auditado: false`.** Os efeitos e intervalos
-de confiança foram curados por memória de modelo de linguagem e **não** foram
-conferidos contra o artigo primário. Ver [`AUDITORIA.md`](AUDITORIA.md) — 47 itens
-para conferir, com os seis pontos frágeis listados no fim.
+Arestas `MEDIU` conferidas contra os resumos indexados no PubMed em 2026-08-22:
+**18 confirmadas, 4 corrigidas, 3 sem correspondência no resumo.** Cada estudo
+carrega `pmid` e `doi`. Ver [`AUDITORIA.md`](AUDITORIA.md).
+
+Cada aresta declara seu estado em `verificacao`:
+
+| | | |
+|---|---|---|
+| ✅ | `confirmado` | bate com o resumo — **pontua** |
+| 🔁 | `corrigido` | o grafo estava errado, valor trocado pelo do resumo — **pontua** |
+| ✎ | `nao_no_resumo` | não consta do resumo — **exibido, fora da pontuação** |
+
+O motor descarta as arestas ✎ ao emitir veredito. É isso que torna a auditoria
+mecânica em vez de decorativa: virar um ✎ pode mudar um veredito, e os testes
+acusam. Foi o que aconteceu com o ferro EV, que saiu de condicional e caiu no
+cemitério quando o achado de readmissão do PREVENTT não apareceu no resumo.
+
+O que auditoria de resumo **não** alcança: as arestas `SUGERE` e `CORRIGE` são
+fisiopatologia, não evidência de ensaio; e a classificação de um desfecho como
+duro ou substituto é decisão editorial.
 
 Isto é material didático e apoio à decisão. Não é diretriz e não substitui
 julgamento clínico.

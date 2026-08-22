@@ -50,10 +50,26 @@ class TestIntegridade(unittest.TestCase):
             if d["tipo"] == "substituto":
                 self.assertIsNone(self.g.chega_em_casa(d["id"]))
 
-    def test_toda_aresta_de_evidencia_esta_marcada_como_nao_auditada(self):
+    def test_toda_aresta_de_evidencia_declara_seu_estado_de_auditoria(self):
+        estados = {"confirmado", "corrigido", "nao_no_resumo"}
         for m in self.g.mediu:
-            self.assertIn("auditado", m)
-            self.assertFalse(m["auditado"], f"{m['estudo']}/{m['desfecho']} foi marcado como auditado sem checklist")
+            self.assertIn(m.get("verificacao"), estados,
+                          f"{m['estudo']}/{m['desfecho']} sem estado de verificação")
+            self.assertEqual(m["auditado"], m["verificacao"] in ("confirmado", "corrigido"),
+                             f"{m['estudo']}/{m['desfecho']}: auditado incoerente com verificacao")
+
+    def test_todo_estudo_indexavel_tem_pmid_e_doi(self):
+        for e in self.g.estudos.values():
+            if e["id"] == "PLASMA-PROFILATICO":
+                continue          # corpo de revisões, sem artigo único indexado
+            self.assertTrue(e.get("pmid"), f"{e['id']} sem PMID")
+            self.assertTrue(e.get("doi"), f"{e['id']} sem DOI")
+
+    def test_aresta_nao_verificada_nao_pontua(self):
+        """PREVENTT/readmissão saiu da pontuação; o ferro EV cai no cemitério."""
+        r = navegar(self.g, "P1")
+        self.assertNotIn(("I_ferro_ev", "PREVENTT"), pares(r["condicionais"]))
+        self.assertIn(("F3", "I_ferro_ev", "PREVENTT"), codigos(r["cemiterio"]))
 
 
 class TestP1Ortopedico(unittest.TestCase):
@@ -74,10 +90,10 @@ class TestP1Ortopedico(unittest.TestCase):
     def test_plasma_profilatico_nao_tem_caminho_ate_casa(self):
         self.assertIn(("F2", "I_plasma", "PLASMA-PROFILATICO"), codigos(self.r["cemiterio"]))
 
-    def test_ferro_ev_e_apenas_condicional(self):
-        """PREVENTT foi nulo no primário; o único caminho é secundário."""
-        self.assertIn(("I_ferro_ev", "PREVENTT"), pares(self.r["condicionais"]))
-        self.assertNotIn(("I_ferro_ev", "PREVENTT"), pares(self.r["sobreviventes"]))
+    def test_ferro_ev_cai_no_cemiterio_apos_a_auditoria(self):
+        """Co-primário do PREVENTT nulo; o caminho por readmissão não é
+        verificável no resumo, então não sustenta veredito."""
+        self.assertIn(("F3", "I_ferro_ev", "PREVENTT"), codigos(self.r["cemiterio"]))
 
     def test_estrategia_restritiva_sobrevive_por_nao_inferioridade(self):
         self.assertIn(("I_restritiva", "TRICS-III"), pares(self.r["sobreviventes"]))

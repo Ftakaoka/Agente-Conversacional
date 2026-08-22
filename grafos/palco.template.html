@@ -161,6 +161,15 @@ svg.grafo{display:block; min-width:900px; width:100%; height:auto}
 .linha.l-corte{background:var(--quebra-soft); margin:0 -18px; padding:7px 18px}
 .linha.l-casa .co{color:var(--casa); font-weight:500}
 .linha.l-nota .co{color:var(--muted); font-size:13px}
+.linha.l-aberta{background:var(--sunken)}
+.linha.l-aberta .ar,.linha.l-aberta .co{color:var(--muted)}
+.fonte{
+  font-family:var(--mono); font-size:11px; line-height:1.6; color:var(--faint);
+  margin:-9px 0 15px; word-break:break-word;
+}
+.fonte a{color:var(--via); text-decoration:none; border-bottom:1px solid var(--via-soft)}
+.fonte a:hover{border-bottom-color:var(--via)}
+.fonte a:focus-visible{outline:2px solid var(--via); outline-offset:2px}
 .linha.l-indent .ar{padding-left:14px}
 .lapide{
   font-family:var(--serif); font-size:20px; font-style:italic; color:var(--quebra);
@@ -179,7 +188,8 @@ svg.grafo{display:block; min-width:900px; width:100%; height:auto}
   font-size:12.5px; color:var(--faint); line-height:1.5; max-width:76ch;
   border-top:1px solid var(--line); padding-top:14px;
 }
-.aviso b{color:var(--quebra); font-weight:600}
+.aviso b{color:var(--ink); font-weight:600}
+.marca-aberta{font-family:var(--mono); color:var(--muted); font-weight:600}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -214,7 +224,7 @@ svg.grafo{display:block; min-width:900px; width:100%; height:auto}
   </div>
 </div>
 
-<p class="aviso"><b>Arestas de evidência não auditadas.</b> Efeitos e intervalos de confiança foram curados por um modelo de linguagem e ainda não foram conferidos contra o artigo primário. Material didático e apoio à decisão — não é diretriz e não substitui julgamento clínico.</p>
+<p class="aviso"><b id="placar">Arestas conferidas contra os resumos indexados no PubMed.</b> As marcadas <span class="marca-aberta">✎</span> não constam do resumo: aparecem no caminho, mas ficam fora da pontuação até serem conferidas no texto completo. Cada rota traz o DOI do ensaio. Material didático e apoio à decisão — não é diretriz e não substitui julgamento clínico.</p>
 </div>
 
 <script id="dados" type="application/json">__PAYLOAD__</script>
@@ -378,7 +388,7 @@ function renderGrafo(){
 }
 
 /* ---------- trajeto ---------- */
-const PREFIXOS=['APRESENTA','SUGERE','CORRIGE','TESTOU','ELEGIVEL','MEDIU','CONTA_PARA','CUSTA','CONFLITA_COM','JANELA','LIMITE'];
+const PREFIXOS=['MEDIU ✎','APRESENTA','SUGERE','CORRIGE','TESTOU','ELEGIVEL','MEDIU','CONTA_PARA','CUSTA','CONFLITA_COM','JANELA','LIMITE'];
 function renderTrajeto(){
   const v=D.pacientes[pAtivo].vereditos[vAtivo], box=document.getElementById('trajeto');
   box.textContent='';
@@ -387,11 +397,21 @@ function renderTrajeto(){
   s.textContent=CLASSES[v.classe][0]+(v.falha?' · '+v.falha:'')+' · escore '+v.escore;
   box.appendChild(s);
 
+  if(v.estudo){
+    const e=D.nos.estudo[v.estudo];
+    if(e.doi){
+      const f=document.createElement('p'); f.className='fonte';
+      f.innerHTML=`<span>${e.citacao}</span> · <a href="https://doi.org/${e.doi}" target="_blank" rel="noopener">doi:${e.doi}</a> · <a href="https://pubmed.ncbi.nlm.nih.gov/${e.pmid}/" target="_blank" rel="noopener">PMID ${e.pmid}</a>`;
+      box.appendChild(f);
+    }
+  }
+
   for(const linha of v.trajeto){
     const row=document.createElement('div'); row.className='linha';
     let aresta='', corpo=linha;
     const pref=PREFIXOS.find(p=>linha.startsWith(p));
-    if(pref){aresta=pref; corpo=linha.slice(pref.length).replace(/^\s*/,'');}
+    if(pref){aresta=pref; corpo=linha.slice(pref.length).replace(/^\s*/,'');
+      if(pref==='MEDIU ✎') row.classList.add('l-aberta');}
     else if(linha.startsWith('   └─')){row.classList.add('l-indent'); aresta='└'; corpo=linha.replace('   └─','').trim();}
     else if(linha.startsWith('⚠')){aresta='ressalva'; corpo=linha.slice(1).trim(); row.classList.add('l-nota');}
     else if(linha.startsWith('⛔')){aresta='ROMPE'; corpo=linha.slice(1).trim(); row.classList.add('l-corte');}
@@ -413,5 +433,8 @@ function render(){
   [...boxPac.children].forEach((b,i)=>b.setAttribute('aria-pressed', i===pAtivo));
   renderVereditos(); renderGrafo(); renderTrajeto();
 }
+const a=D.meta.auditoria;
+if(a) document.getElementById('placar').textContent =
+  `${a.confirmado} arestas confirmadas, ${a.corrigido} corrigidas e ${a.nao_no_resumo} sem correspondência no resumo, conferidas no PubMed em ${a.data}.`;
 render();
 </script>

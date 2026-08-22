@@ -25,6 +25,7 @@ def payload(grafo):
         "meta": {
             "tese": grafo.meta["tese"],
             "lapides": {m["id"]: m["lapide"] for m in grafo.meta["modos_de_falha"]},
+            "auditoria": grafo.meta["auditoria"],
         },
         "nos": {
             "achado": {k: v["rotulo"] for k, v in grafo.achados.items()},
@@ -32,7 +33,9 @@ def payload(grafo):
             "intervencao": {k: {"rotulo": v["rotulo"], "classe": v["classe"],
                                 "sus": v["sus"], "custo": v["custo_ordem"]}
                             for k, v in grafo.intervencoes.items()},
-            "estudo": {k: {"rotulo": v["rotulo"], "ano": v["ano"], "n": v["n"]}
+            "estudo": {k: {"rotulo": v["rotulo"], "ano": v["ano"], "n": v["n"],
+                           "pmid": v.get("pmid"), "doi": v.get("doi"),
+                           "citacao": v.get("citacao_verificada") or v["citacao"]}
                        for k, v in grafo.estudos.items()},
             "desfecho": {k: {"rotulo": v["rotulo"], "tipo": v["tipo"]}
                          for k, v in grafo.desfechos.items()},

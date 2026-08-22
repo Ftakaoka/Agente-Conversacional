@@ -33,7 +33,7 @@
       }
     ],
     "avisos": [
-      "TODAS as arestas de evidência estão marcadas com auditado=false. Os efeitos e intervalos de confiança foram curados por memória de modelo e DEVEM ser conferidos contra o artigo primário antes de qualquer uso público. Ver grafos/AUDITORIA.md.",
+      "Arestas de evidência conferidas contra o resumo indexado no PubMed em 2026-08-22. Cada aresta MEDIU carrega 'verificacao': confirmado (bate com o resumo), corrigido (a versão anterior deste grafo estava errada e foi trocada pelo valor do resumo) ou nao_no_resumo (não consta do resumo — a aresta é EXIBIDA mas EXCLUÍDA da pontuação). Conferir contra o texto completo continua sendo necessário para as arestas nao_no_resumo e para qualquer número secundário.",
       "Apoio à decisão e material didático. Não é diretriz nem substitui julgamento clínico.",
       "A camada de mecanismo é uma simplificação didática deliberada: um achado real costuma sugerir vários mecanismos com pesos que este grafo não estima."
     ],
@@ -45,6 +45,13 @@
         "cemiterio"
       ],
       "regra_casa": "Só desfecho duro tem aresta CONTA_PARA até CASA. Desfecho substituto é beco sem saída, por construção."
+    },
+    "auditoria": {
+      "data": "2026-08-22",
+      "fonte": "PubMed (resumos indexados)",
+      "confirmado": 18,
+      "corrigido": 4,
+      "nao_no_resumo": 3
     }
   },
   "terminal": {
@@ -359,6 +366,11 @@
       "id": "D_tromb_arterial",
       "rotulo": "Tromboembolismo arterial",
       "tipo": "adverso"
+    },
+    {
+      "id": "D_morte_ou_histerectomia",
+      "rotulo": "Morte por qualquer causa ou histerectomia",
+      "tipo": "duro"
     }
   ],
   "conta_para": [
@@ -393,6 +405,10 @@
     {
       "de": "D_tromb_arterial",
       "sinal": "-"
+    },
+    {
+      "de": "D_morte_ou_histerectomia",
+      "sinal": "+"
     }
   ],
   "sugere": [
@@ -589,7 +605,10 @@
           "dose": "1 g IV na indução + 1 g ao fim da cirurgia"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "35363452",
+      "doi": "10.1056/NEJMoa2201171",
+      "citacao_verificada": "N Engl J Med 2022;386:1986-1997"
     },
     {
       "id": "ATACAS",
@@ -610,7 +629,10 @@
           "dose": "100 mg/kg, reduzida a 50 mg/kg durante o ensaio"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "27774838",
+      "doi": "10.1056/NEJMoa1606424",
+      "citacao_verificada": "N Engl J Med 2017;376:136-148"
     },
     {
       "id": "FIBRES",
@@ -631,7 +653,10 @@
           "dose": "4 g vs 10 U de crioprecipitado"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "31634905",
+      "doi": "10.1001/jama.2019.17312",
+      "citacao_verificada": "JAMA 2019;322:1966-1976"
     },
     {
       "id": "TRICS-III",
@@ -657,7 +682,10 @@
           "dose": "gatilho Hb < 7,5 g/dL vs < 9,5 g/dL"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "29130845",
+      "doi": "10.1056/NEJMoa1711818",
+      "citacao_verificada": "N Engl J Med 2017;377:2133-2144"
     },
     {
       "id": "FOCUS",
@@ -683,7 +711,10 @@
           "dose": "gatilho Hb < 8 g/dL ou sintomas vs < 10 g/dL"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "22168590",
+      "doi": "10.1056/NEJMoa1012452",
+      "citacao_verificada": "N Engl J Med 2011;365:2453-62"
     },
     {
       "id": "MINT",
@@ -709,7 +740,10 @@
           "dose": "gatilho Hb < 8 g/dL vs < 10 g/dL"
         }
       ],
-      "papel": "limite"
+      "papel": "limite",
+      "pmid": "37952133",
+      "doi": "10.1056/NEJMoa2307983",
+      "citacao_verificada": "N Engl J Med 2023;389:2446-2456"
     },
     {
       "id": "PREVENTT",
@@ -731,16 +765,19 @@
           "dose": "carboximaltose férrica 10–42 dias antes (mediana ~15 dias)"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "32896294",
+      "doi": "10.1016/S0140-6736(20)31539-7",
+      "citacao_verificada": "Lancet 2020;396:1353-1361"
     },
     {
       "id": "COCHRANE-SALVAGE",
-      "rotulo": "Revisão Cochrane — cell salvage",
-      "ano": 2010,
-      "citacao": "Carless PA et al. Cell salvage for minimising perioperative allogeneic blood transfusion. Cochrane Database Syst Rev.",
-      "n": null,
+      "rotulo": "Revisão Cochrane — cell salvage (atualização 2023)",
+      "ano": 2023,
+      "citacao": "Lloyd TD, Geneen LJ, Bernhardt K, et al. Cell salvage for minimising perioperative allogeneic blood transfusion in adults undergoing elective surgery. Cochrane Database Syst Rev 2023;9:CD001888.",
+      "n": 14528,
       "populacao": {
-        "descricao": "Cirurgia eletiva cardíaca e ortopédica",
+        "descricao": "Adultos em cirurgia eletiva (106 ECRs, 24 países)",
         "contextos": [
           "cirurgia_cardiaca",
           "ortopedica_grande_porte",
@@ -754,7 +791,10 @@
           "dose": "recuperação intraoperatória"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "37681564",
+      "doi": "10.1002/14651858.CD001888.pub5",
+      "citacao_verificada": "Cochrane Database Syst Rev 2023;9:CD001888"
     },
     {
       "id": "CRASH-2",
@@ -775,7 +815,10 @@
           "dose": "1 g em 10 min + 1 g em 8 h"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "20554319",
+      "doi": "10.1016/S0140-6736(10)60835-5",
+      "citacao_verificada": "Lancet 2010;376:23-32"
     },
     {
       "id": "CRASH-3",
@@ -796,7 +839,10 @@
           "dose": "1 g + 1 g em 8 h"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "31623894",
+      "doi": "10.1016/S0140-6736(19)32233-0",
+      "citacao_verificada": "Lancet 2019;394:1713-1723"
     },
     {
       "id": "WOMAN",
@@ -817,7 +863,10 @@
           "dose": "1 g IV, repetível"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "28456509",
+      "doi": "10.1016/S0140-6736(17)30638-4",
+      "citacao_verificada": "Lancet 2017;389:2105-2116"
     },
     {
       "id": "HALT-IT",
@@ -838,7 +887,10 @@
           "dose": "4 g de ataque + 4 g em 24 h (dose alta)"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "32563378",
+      "doi": "10.1016/S0140-6736(20)30848-5",
+      "citacao_verificada": "Lancet 2020;395:1927-1936"
     },
     {
       "id": "PROCOAG",
@@ -859,7 +911,10 @@
           "dose": "25 UI/kg, empírico"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "36942533",
+      "doi": "10.1001/jama.2023.4080",
+      "citacao_verificada": "JAMA 2023;329:1367-1375"
     },
     {
       "id": "CRYOSTAT-2",
@@ -880,7 +935,10 @@
           "dose": "3 pools (~6 g de fibrinogênio) empírico precoce"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "37824155",
+      "doi": "10.1001/jama.2023.21019",
+      "citacao_verificada": "JAMA 2023;330:1882-1891"
     },
     {
       "id": "PATCH-ICH",
@@ -901,7 +959,10 @@
           "dose": "transfusão de plaquetas em até 6 h"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "27178479",
+      "doi": "10.1016/S0140-6736(16)30392-0",
+      "citacao_verificada": "Lancet 2016;387:2605-2613"
     },
     {
       "id": "PROPPR",
@@ -922,7 +983,10 @@
           "dose": "razão fixa 1:1:1 vs 1:1:2"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": "25647203",
+      "doi": "10.1001/jama.2015.12",
+      "citacao_verificada": "JAMA 2015;313:471-82"
     },
     {
       "id": "PLASMA-PROFILATICO",
@@ -944,7 +1008,9 @@
           "dose": "profilático pré-procedimento"
         }
       ],
-      "papel": "principal"
+      "papel": "principal",
+      "pmid": null,
+      "doi": null
     }
   ],
   "mediu": [
@@ -955,8 +1021,9 @@
       "direcao": "beneficio",
       "efeito": "9,1% vs 11,7% — HR 0,76",
       "ic": "0,67–0,87",
-      "nota": "Composto de sangramento com significado clínico em 30 dias.",
-      "auditado": false
+      "nota": "Desfecho primário de eficácia: sangramento ameaçador à vida, sangramento maior ou sangramento em órgão crítico, em 30 dias. Diferença absoluta −2,6 pp (−3,8 a −1,4); P<0,001 para superioridade.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "POISE3-TXA",
@@ -965,8 +1032,9 @@
       "direcao": "incerto",
       "efeito": "14,2% vs 13,9% — HR 1,02",
       "ic": "0,92–1,14",
-      "nota": "Co-primário de segurança: NÃO atingiu a margem de não-inferioridade (1,125). É a ressalva honesta da droga.",
-      "auditado": false
+      "nota": "Co-primário de segurança. Limite superior do IC unilateral de 97,5% = 1,14, acima da margem de não-inferioridade de 1,125: a NÃO-INFERIORIDADE NÃO FOI ESTABELECIDA. É a ressalva honesta da droga.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "ATACAS",
@@ -975,18 +1043,20 @@
       "direcao": "nao_inferior",
       "efeito": "16,7% vs 18,1% — RR 0,92",
       "ic": "0,81–1,05",
-      "nota": "Composto morte/evento trombótico em 30 dias; não-inferioridade atingida.",
-      "auditado": false
+      "nota": "Composto morte e complicações trombóticas em 30 dias; P=0,22.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "ATACAS",
       "desfecho": "D_exposicao",
       "primario": false,
       "direcao": "beneficio",
-      "efeito": "37,9% vs 54,7%",
+      "efeito": "4331 vs 7994 unidades de hemocomponente transfundidas na internação",
       "ic": "—",
-      "nota": "Redução expressiva — mas é desfecho substituto.",
-      "auditado": false
+      "nota": "CORRIGIDO na auditoria: a versão anterior deste grafo afirmava 37,9% vs 54,7% de pacientes transfundidos, número que não consta do resumo. Substituído pelo total de unidades, que consta (P<0,001). Desfecho substituto.",
+      "auditado": true,
+      "verificacao": "corrigido"
     },
     {
       "estudo": "ATACAS",
@@ -995,38 +1065,42 @@
       "direcao": "dano",
       "efeito": "0,7% vs 0,1%",
       "ic": "—",
-      "nota": "O preço conhecido do TXA em dose alta com CEC.",
-      "auditado": false
+      "nota": "P=0,002. O preço conhecido do TXA em dose alta com CEC.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "FIBRES",
       "desfecho": "D_unidades",
       "primario": true,
       "direcao": "nao_inferior",
-      "efeito": "razão 0,83 — não-inferior ao crioprecipitado",
-      "ic": "0,72–0,94",
-      "nota": "Desfecho primário SUBSTITUTO. O ensaio não foi dimensionado para desfecho duro.",
-      "auditado": false
+      "efeito": "16,3 vs 17,0 unidades em 24 h — razão 0,96",
+      "ic": "0,84–1,09",
+      "nota": "CORRIGIDO na auditoria: a versão anterior afirmava razão 0,83 (0,72–0,94), número incorreto. O real é razão 0,96, IC bilateral de 95% 0,84–1,09; margem de não-inferioridade <1,2, P<0,001 para não-inferioridade e P=0,50 para superioridade. Desfecho primário SUBSTITUTO.",
+      "auditado": true,
+      "verificacao": "corrigido"
     },
     {
       "estudo": "TRICS-III",
       "desfecho": "D_mace",
       "primario": true,
       "direcao": "nao_inferior",
-      "efeito": "11,4% (restritivo) vs 12,5% — diferença −1,11 pp",
+      "efeito": "11,4% (restritivo) vs 12,5% — diferença absoluta −1,11 pp",
       "ic": "−2,93 a 0,72",
-      "nota": "Não-inferioridade atingida: transfundir menos não custou desfecho.",
-      "auditado": false
+      "nota": "OR 0,90 (0,76–1,07); P<0,001 para não-inferioridade. Transfusão de hemácias em 52,3% vs 72,6% (OR 0,41).",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "FOCUS",
       "desfecho": "D_morte_incap",
       "primario": true,
       "direcao": "nao_inferior",
-      "efeito": "34,7% (restritivo) vs 35,2% — OR 1,01",
+      "efeito": "34,7% (restritivo) vs 35,2% (liberal) — OR 1,01",
       "ic": "0,84–1,22",
-      "nota": "Morte ou incapacidade de caminhar aos 60 dias.",
-      "auditado": false
+      "nota": "Morte ou incapacidade de caminhar pela sala sem auxílio aos 60 dias.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "MINT",
@@ -1035,18 +1109,20 @@
       "direcao": "incerto",
       "efeito": "16,9% (restritivo) vs 14,5% (liberal) — RR 1,15",
       "ic": "0,99–1,34",
-      "nota": "IAM ou morte em 30 dias. Sinal numérico a favor do liberal, sem significância. O limite do padrão restritivo.",
-      "auditado": false
+      "nota": "IAM ou morte em 30 dias; P=0,07. Morte isolada 9,9% vs 8,3% (RR 1,19; 0,96–1,47). Sinal numérico a favor do liberal, sem significância. O limite do padrão restritivo.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "PREVENTT",
       "desfecho": "D_mort30",
       "primario": true,
       "direcao": "nulo",
-      "efeito": "co-primário morte ou transfusão até 30 dias — sem diferença",
-      "ic": "—",
-      "nota": "O ferro EV pré-operatório NÃO reduziu transfusão nem morte neste ensaio. A prática é mais confiante que o dado.",
-      "auditado": false
+      "efeito": "28% vs 29% — RR 1,03",
+      "ic": "0,78–1,37",
+      "nota": "Co-primário: morte ou transfusão até 30 dias; P=0,84. Número de transfusões: razão de taxas 0,98 (0,68–1,43). O ferro EV pré-operatório não reduziu transfusão nem morte.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "PREVENTT",
@@ -1055,8 +1131,9 @@
       "direcao": "beneficio",
       "efeito": "menos readmissões no grupo ferro",
       "ic": "—",
-      "nota": "Desfecho SECUNDÁRIO, gerador de hipótese — mas é o único caminho do ferro até CASA.",
-      "auditado": false
+      "nota": "NÃO VERIFICÁVEL no resumo indexado: o resumo do PREVENTT não menciona readmissões. Esta aresta está EXCLUÍDA da pontuação até ser conferida no texto completo — e era o único caminho do ferro EV até CASA.",
+      "auditado": false,
+      "verificacao": "nao_no_resumo"
     },
     {
       "estudo": "PREVENTT",
@@ -1065,18 +1142,20 @@
       "direcao": "beneficio",
       "efeito": "Hb maior em 8 semanas e 6 meses",
       "ic": "—",
-      "nota": "Substituto.",
-      "auditado": false
+      "nota": "NÃO VERIFICÁVEL no resumo indexado. Substituto de qualquer modo.",
+      "auditado": false,
+      "verificacao": "nao_no_resumo"
     },
     {
       "estudo": "COCHRANE-SALVAGE",
       "desfecho": "D_exposicao",
       "primario": true,
       "direcao": "beneficio",
-      "efeito": "redução da exposição a sangue alogênico",
-      "ic": "—",
-      "nota": "Substituto. Não há evidência de desfecho duro.",
-      "auditado": false
+      "efeito": "RR 0,65 (82 ECRs, 12.520 participantes) — certeza MUITO BAIXA",
+      "ic": "0,59–0,72",
+      "nota": "ATUALIZADO na auditoria: a versão anterior citava a revisão de 2010 (RR 0,62) como benefício estabelecido. A atualização de 2023 rebaixa a certeza do agregado para MUITO BAIXA; certeza moderada só em subgrupos (cardiovascular sem CEC RR 0,82; coluna RR 0,44). Substituto em qualquer cenário.",
+      "auditado": true,
+      "verificacao": "corrigido"
     },
     {
       "estudo": "CRASH-2",
@@ -1085,18 +1164,20 @@
       "direcao": "beneficio",
       "efeito": "14,5% vs 16,0% — RR 0,91",
       "ic": "0,85–0,97",
-      "nota": "Benefício concentrado na administração < 3 h; administração tardia foi associada a dano.",
-      "auditado": false
+      "nota": "Mortalidade por todas as causas em 4 semanas; p=0,0035. Benefício concentrado na administração precoce.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "CRASH-3",
       "desfecho": "D_mort30",
       "primario": true,
       "direcao": "incerto",
-      "efeito": "18,5% vs 19,8% — RR 0,94; em TCE leve-moderado RR 0,78",
-      "ic": "0,86–1,02 / 0,64–0,95",
-      "nota": "Nulo no geral, benefício no subgrupo pré-especificado leve-moderado.",
-      "auditado": false
+      "efeito": "12,5% vs 14,0% — RR 0,89 (pupilas reativas ao início); leve-moderado RR 0,78",
+      "ic": "0,80–1,00 / 0,64–0,95",
+      "nota": "CORRIGIDO na auditoria: a versão anterior afirmava 18,5% vs 19,8% (RR 0,94), que não consta do resumo. Os números conferidos são os da população com pupilas reativas. Eventos vaso-oclusivos RR 0,98 (0,74–1,28); convulsões RR 1,09 (0,90–1,33).",
+      "auditado": true,
+      "verificacao": "corrigido"
     },
     {
       "estudo": "WOMAN",
@@ -1105,78 +1186,86 @@
       "direcao": "beneficio",
       "efeito": "morte por sangramento 1,5% vs 1,9% — RR 0,81",
       "ic": "0,65–1,00",
-      "nota": "Tratadas em até 3 h: RR 0,69 (0,52–0,91).",
-      "auditado": false
+      "nota": "p=0,045; tratadas em até 3 h RR 0,69 (0,52–0,91). ATENÇÃO — o desfecho PRIMÁRIO era o composto morte por qualquer causa ou histerectomia, e esse NÃO foi reduzido: RR 0,97 (0,87–1,09), p=0,65. O que moveu foi a morte por sangramento.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "HALT-IT",
       "desfecho": "D_mort30",
       "primario": true,
       "direcao": "nulo",
-      "efeito": "morte por sangramento em 5 dias 3,7% vs 3,8% — RR 0,99",
+      "efeito": "morte por sangramento em 5 dias 4% vs 4% (222/5956 vs 226/5981) — RR 0,99",
       "ic": "0,82–1,18",
       "nota": "Mesma droga do CRASH-2, desfecho duro, população diferente: nulo.",
-      "auditado": false
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "HALT-IT",
       "desfecho": "D_tev",
       "primario": false,
       "direcao": "dano",
-      "efeito": "0,8% vs 0,4% — RR 1,85",
+      "efeito": "TVP ou TEP 0,8% vs 0,4% — RR 1,85",
       "ic": "1,15–2,98",
-      "nota": "TVP/TEP.",
-      "auditado": false
+      "nota": "Eventos arteriais foram semelhantes (RR 0,92; 0,60–1,39); o excesso é venoso.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "PROCOAG",
       "desfecho": "D_unidades",
       "primario": true,
       "direcao": "nulo",
-      "efeito": "mediana 12 vs 11 U em 24 h — diferença 0,2",
+      "efeito": "mediana 12 vs 11 U em 24 h — diferença absoluta 0,2 U",
       "ic": "−2,99 a 3,33",
-      "nota": "Desfecho primário SUBSTITUTO — e nem esse melhorou.",
-      "auditado": false
+      "nota": "Desfecho primário SUBSTITUTO (consumo de hemocomponentes em 24 h) — e nem esse melhorou; P=0,72.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "PROCOAG",
       "desfecho": "D_tev",
       "primario": false,
       "direcao": "dano",
-      "efeito": "35% vs 24% — diferença 11 pp",
+      "efeito": "35% vs 24% — diferença absoluta 11 pp",
       "ic": "1–21",
-      "nota": "Eventos tromboembólicos.",
-      "auditado": false
+      "nota": "Desfecho secundário de segurança.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "CRYOSTAT-2",
       "desfecho": "D_mort30",
       "primario": true,
       "direcao": "nulo",
-      "efeito": "25,3% vs 26,1% — OR 0,96",
+      "efeito": "25,3% (crio) vs 26,1% (padrão) — OR 0,96",
       "ic": "0,75–1,23",
-      "nota": "Mediu o desfecho certo, no paciente certo, e não funcionou.",
-      "auditado": false
+      "nota": "Mortalidade por todas as causas em 28 dias, intenção de tratar; P=0,74. Mediu o desfecho certo, no paciente certo, e não funcionou.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "PATCH-ICH",
       "desfecho": "D_morte_incap",
       "primario": true,
       "direcao": "dano",
-      "efeito": "morte ou dependência em 3 meses — OR 2,05",
+      "efeito": "morte ou dependência (mRS) em 3 meses — OR comum ajustada 2,05",
       "ic": "1,18–3,56",
-      "nota": "Transfundir plaquetas piorou o desfecho.",
-      "auditado": false
+      "nota": "p=0,0114. Transfundir plaquetas piorou o desfecho.",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "PROPPR",
       "desfecho": "D_mort30",
       "primario": true,
       "direcao": "nulo",
-      "efeito": "24 h: 12,7% vs 17,0% (p=0,12); 30 d: 22,4% vs 26,1% (p=0,26)",
+      "efeito": "24 h: 12,7% vs 17,0% (diferença −4,2 pp; −9,6 a 1,1; P=0,12); 30 d: 22,4% vs 26,1% (diferença −3,7 pp; −10,2 a 2,7; P=0,26)",
       "ic": "—",
-      "nota": "Primários não atingidos; morte por exsanguinação em 24 h menor (9,2% vs 14,6%).",
-      "auditado": false
+      "nota": "Ambos os primários não atingidos. Morte por exsanguinação em 24 h menor no 1:1:1 (9,2% vs 14,6%; diferença −5,4 pp; −10,4 a −0,5; P=0,03) e mais pacientes atingiram hemostasia (86% vs 78%).",
+      "auditado": true,
+      "verificacao": "confirmado"
     },
     {
       "estudo": "PLASMA-PROFILATICO",
@@ -1185,8 +1274,20 @@
       "direcao": "nulo",
       "efeito": "sem redução consistente de sangramento",
       "ic": "—",
-      "nota": "Não existe desfecho duro favorável. O plasma profilático não tem caminho até CASA em nenhuma população deste grafo.",
-      "auditado": false
+      "nota": "Sem ensaio único indexado: afirmação apoiada em corpo de revisões, não auditável por resumo. Excluída da pontuação — o que não altera o veredito, já que é substituto.",
+      "auditado": false,
+      "verificacao": "nao_no_resumo"
+    },
+    {
+      "estudo": "WOMAN",
+      "desfecho": "D_morte_ou_histerectomia",
+      "primario": true,
+      "direcao": "nulo",
+      "efeito": "5,3% vs 5,5% — RR 0,97",
+      "ic": "0,87–1,09",
+      "nota": "O desfecho PRIMÁRIO do WOMAN. Não foi reduzido (p=0,65). A morte por sangramento, que moveu, era componente.",
+      "auditado": true,
+      "verificacao": "confirmado"
     }
   ],
   "custa": [
@@ -1206,7 +1307,7 @@
       "intervencao": "I_ccp",
       "desfecho": "D_tev",
       "fonte": "PROCOAG",
-      "efeito": "35% vs 24% no uso empírico em trauma"
+      "efeito": "35% vs 24% (diferença 11 pp; 1–21) no uso empírico em trauma"
     },
     {
       "intervencao": "I_plaquetas",

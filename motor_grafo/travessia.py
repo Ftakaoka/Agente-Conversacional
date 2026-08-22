@@ -47,6 +47,7 @@ class Veredito:
     medidas_duras: list = field(default_factory=list)
     medidas_substitutas: list = field(default_factory=list)
     adversos: list = field(default_factory=list)
+    nao_verificadas: list = field(default_factory=list)
     custos: list = field(default_factory=list)
     conflitos: list = field(default_factory=list)
     limites: list = field(default_factory=list)
@@ -85,6 +86,12 @@ def _julgar(grafo, rota):
 
     for m in grafo.medidas_de(rota.estudo):
         tipo = grafo.desfechos[m["desfecho"]]["tipo"]
+        if m.get("verificacao") == "nao_no_resumo":
+            # A aresta é exibida, mas não pontua: o que não foi conferido não
+            # pode sustentar um veredito. É o que torna a auditoria mecânica,
+            # e não decorativa.
+            v.nao_verificadas.append(m)
+            continue
         if tipo == "duro":
             v.medidas_duras.append(m)
         elif tipo == "substituto":
