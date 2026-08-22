@@ -30,6 +30,11 @@
         "id": "F4",
         "aresta": "CUSTA",
         "lapide": "O custo adverso consome o ganho."
+      },
+      {
+        "id": "F5",
+        "aresta": "CONTA_PARA (medida direta)",
+        "lapide": "Mediu CASA diretamente. CASA não se moveu."
       }
     ],
     "avisos": [
@@ -48,16 +53,18 @@
     },
     "auditoria": {
       "data": "2026-08-22",
-      "fonte": "PubMed (resumos indexados)",
-      "confirmado": 18,
+      "fonte": "PubMed (resumos) + texto completo do PREVENTT",
+      "confirmado": 21,
       "corrigido": 4,
-      "nao_no_resumo": 3
+      "nao_no_resumo": 1
     }
   },
   "terminal": {
     "id": "CASA",
     "rotulo": "CASA — dias vivo e fora do hospital em 30 dias (DAOH-30)",
-    "descricao": "Nó terminal único. É o desfecho que o paciente contratou. Toda aresta CONTA_PARA aponta para cá, com sinal + ou -."
+    "descricao": "Nó terminal único. É o desfecho que o paciente contratou. Toda aresta CONTA_PARA aponta para cá, com sinal + ou -.",
+    "horizonte": "30 dias",
+    "nota_horizonte": "O horizonte de CASA é uma DECISÃO EDITORIAL, não um dado. O PREVENTT é o caso que expõe isso: DAOH-30 ficou plano, e o ganho de readmissão do ferro EV acontece entre a alta e 8 semanas — fora da janela. Mudar o horizonte de CASA para 8 semanas muda o veredito do ferro endovenoso."
   },
   "achados": [
     {
@@ -371,6 +378,13 @@
       "id": "D_morte_ou_histerectomia",
       "rotulo": "Morte por qualquer causa ou histerectomia",
       "tipo": "duro"
+    },
+    {
+      "id": "D_daoh30",
+      "rotulo": "Dias vivo e fora do hospital em 30 dias (DAOH-30)",
+      "tipo": "duro",
+      "terminal_direto": true,
+      "nota": "Este desfecho NÃO é um substituto de CASA — ele É CASA, medido. Quando um ensaio o mede, nenhum desfecho secundário do mesmo horizonte o sobrepõe."
     }
   ],
   "conta_para": [
@@ -408,6 +422,10 @@
     },
     {
       "de": "D_morte_ou_histerectomia",
+      "sinal": "+"
+    },
+    {
+      "de": "D_daoh30",
       "sinal": "+"
     }
   ],
@@ -768,7 +786,8 @@
       "papel": "principal",
       "pmid": "32896294",
       "doi": "10.1016/S0140-6736(20)31539-7",
-      "citacao_verificada": "Lancet 2020;396:1353-1361"
+      "citacao_verificada": "Lancet 2020;396:1353-1361",
+      "texto_completo_lido": true
     },
     {
       "id": "COCHRANE-SALVAGE",
@@ -1114,39 +1133,6 @@
       "verificacao": "confirmado"
     },
     {
-      "estudo": "PREVENTT",
-      "desfecho": "D_mort30",
-      "primario": true,
-      "direcao": "nulo",
-      "efeito": "28% vs 29% — RR 1,03",
-      "ic": "0,78–1,37",
-      "nota": "Co-primário: morte ou transfusão até 30 dias; P=0,84. Número de transfusões: razão de taxas 0,98 (0,68–1,43). O ferro EV pré-operatório não reduziu transfusão nem morte.",
-      "auditado": true,
-      "verificacao": "confirmado"
-    },
-    {
-      "estudo": "PREVENTT",
-      "desfecho": "D_readmissao",
-      "primario": false,
-      "direcao": "beneficio",
-      "efeito": "menos readmissões no grupo ferro",
-      "ic": "—",
-      "nota": "NÃO VERIFICÁVEL no resumo indexado: o resumo do PREVENTT não menciona readmissões. Esta aresta está EXCLUÍDA da pontuação até ser conferida no texto completo — e era o único caminho do ferro EV até CASA.",
-      "auditado": false,
-      "verificacao": "nao_no_resumo"
-    },
-    {
-      "estudo": "PREVENTT",
-      "desfecho": "D_hb_pos",
-      "primario": false,
-      "direcao": "beneficio",
-      "efeito": "Hb maior em 8 semanas e 6 meses",
-      "ic": "—",
-      "nota": "NÃO VERIFICÁVEL no resumo indexado. Substituto de qualquer modo.",
-      "auditado": false,
-      "verificacao": "nao_no_resumo"
-    },
-    {
       "estudo": "COCHRANE-SALVAGE",
       "desfecho": "D_exposicao",
       "primario": true,
@@ -1288,6 +1274,54 @@
       "nota": "O desfecho PRIMÁRIO do WOMAN. Não foi reduzido (p=0,65). A morte por sangramento, que moveu, era componente.",
       "auditado": true,
       "verificacao": "confirmado"
+    },
+    {
+      "estudo": "PREVENTT",
+      "desfecho": "D_mort30",
+      "primario": true,
+      "direcao": "nulo",
+      "efeito": "morte ou transfusão até 30 dias: 28% vs 29% — RR 1,03",
+      "ic": "0,78–1,37",
+      "nota": "Co-primário; p=0,84; diferença absoluta de risco 0,8% (−7,3 a 9,0). O segundo co-primário, número de transfusões, também foi nulo (razão de taxas 0,98; 0,68–1,43).",
+      "auditado": true,
+      "verificacao": "confirmado",
+      "fonte_verificacao": "texto_completo"
+    },
+    {
+      "estudo": "PREVENTT",
+      "desfecho": "D_daoh30",
+      "primario": false,
+      "direcao": "nulo",
+      "efeito": "19,8 (DP 7,5) vs 19,7 (DP 7,0) dias — diferença −0,1",
+      "ic": "−1,5 a 1,2",
+      "nota": "MEDIDA DIRETA DO NÓ TERMINAL. Não é proxy de CASA: é CASA. Ficou plana. Tempo de internação também não diferiu (mediana 9 vs 9 dias).",
+      "auditado": true,
+      "verificacao": "confirmado",
+      "fonte_verificacao": "texto_completo"
+    },
+    {
+      "estudo": "PREVENTT",
+      "desfecho": "D_readmissao",
+      "primario": false,
+      "direcao": "beneficio",
+      "efeito": "readmissão por complicações até 8 semanas: 51/234 (22%) vs 31/234 (13%) — RR 0,61",
+      "ic": "0,40–0,91",
+      "nota": "Desfecho secundário PRÉ-ESPECIFICADO, confirmado no texto completo. Readmissões totais 71 vs 38 (razão de taxas 0,54; 0,34–0,85). Até 6 meses o efeito se atenua: qualquer readmissão RR 0,78 (0,58–1,04), não significativo; readmissões totais 130 vs 84 (razão 0,64; 0,44–0,92). ATENÇÃO AO HORIZONTE: este ganho acontece FORA da janela de 30 dias do nó CASA.",
+      "auditado": true,
+      "verificacao": "confirmado",
+      "fonte_verificacao": "texto_completo"
+    },
+    {
+      "estudo": "PREVENTT",
+      "desfecho": "D_hb_pos",
+      "primario": false,
+      "direcao": "beneficio",
+      "efeito": "Hb 8 semanas: diferença média +10,7 g/L; 6 meses: +7,3 g/L",
+      "ic": "7,8–13,7 / 3,6–11,1",
+      "nota": "Substituto. No dia da cirurgia a diferença era de apenas +4,7 g/L (2,7–6,8); anemia corrigida em 21% vs 10% (RR 2,06; 1,27–3,35). Mediana de 15 dias entre randomização e cirurgia — tempo curto demais para o efeito eritropoiético.",
+      "auditado": true,
+      "verificacao": "confirmado",
+      "fonte_verificacao": "texto_completo"
     }
   ],
   "custa": [

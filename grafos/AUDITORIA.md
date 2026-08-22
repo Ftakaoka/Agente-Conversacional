@@ -1,46 +1,65 @@
 # Auditoria das arestas de evidência
 
-Conferido em **2026-08-22** contra os resumos indexados no **PubMed**.
-**18 confirmados · 4 corrigidos · 3 não constam do resumo.**
+Conferido em **2026-08-22**. Fonte: **PubMed (resumos) + texto completo do PREVENTT**.
+**21 confirmadas · 4 corrigidas · 1 sem correspondência no resumo.**
 
 | | Estado | Significado |
 |---|---|---|
-| ✅ | `confirmado` | O efeito e o IC do grafo batem com o resumo. Pontua. |
-| 🔁 | `corrigido` | O grafo estava **errado**; o valor foi trocado pelo do resumo. Pontua. |
-| ✎ | `nao_no_resumo` | Não consta do resumo. **Exibido, mas excluído da pontuação** — só volta a valer se você conferir o texto completo. |
+| ✅ | `confirmado` | Bate com a fonte. Pontua. |
+| 🔁 | `corrigido` | O grafo estava **errado**; valor trocado pelo da fonte. Pontua. |
+| ✎ | `nao_no_resumo` | Não consta do resumo. **Exibida, fora da pontuação.** |
 
-O motor ignora arestas ✎ ao emitir veredito. É isso que torna a auditoria mecânica em vez de decorativa:
-virar um ✎ em confirmado no JSON pode mudar um veredito, e os testes vão acusar.
+O motor descarta arestas ✎ ao emitir veredito — é isso que torna a auditoria mecânica em vez de
+decorativa. Virar um ✎ pode mudar um veredito, e os testes acusam. Foi exatamente o que aconteceu.
 
-## O que mudou nesta passagem
+## O achado desta auditoria
 
-Três achados que alteram o que você vai dizer no palco:
+**O PREVENTT mediu o próprio nó terminal do grafo — e ele não se moveu.**
 
-1. **FIBRES estava errado no grafo.** Eu havia afirmado razão 0,83 (0,72–0,94). O real é
-   **razão 0,96, IC 95% 0,84–1,09**, margem de não-inferioridade <1,2 — não-inferior, e
-   explicitamente **não superior** (P=0,50 para superioridade). O veredito não muda (F2, desfecho
-   substituto) e fica mais forte: o concentrado de fibrinogênio empatou com o crioprecipitado
-   num desfecho que não chega em CASA.
-2. **O ferro EV saiu de `condicional` e caiu no cemitério (F3).** O co-primário do PREVENTT foi
-   nulo (RR 1,03; 0,78–1,37) e o achado de readmissão que eu usava como único caminho até CASA
-   **não consta do resumo**. Se você conferir no texto completo e ele existir, é só marcar
-   `verificacao: "confirmado"` e o ferro volta a condicional.
-3. **O WOMAN tem uma ressalva que faltava.** O desfecho **primário** era o composto morte por
-   qualquer causa ou histerectomia, e ele **não foi reduzido** (RR 0,97; 0,87–1,09). O que moveu
-   foi a morte por sangramento, que era componente. A aresta foi adicionada ao grafo.
+Dias vivo e fora do hospital em 30 dias: **19,8 (DP 7,5) no placebo vs 19,7 (DP 7,0) no ferro EV,**
+**diferença −0,1 dia (IC 95% −1,5 a 1,2)**. Não é um proxy de CASA. É CASA, medida, plana.
+Tempo de internação também não diferiu (mediana 9 vs 9 dias).
 
-Mais duas correções menores: o número de transfusão do ATACAS que eu citava (37,9% vs 54,7%)
-não consta do resumo e foi trocado pelo total de unidades (4331 vs 7994); e os números de manchete
-do CRASH-3 foram trocados pelos da população com pupilas reativas, que são os do resumo.
+Isso obrigou a criar um quinto modo de falha, **F5 — *Mediu CASA diretamente. CASA não se moveu.***
+Quando um ensaio mede o nó terminal, nenhum desfecho secundário do mesmo horizonte o sobrepõe.
 
-E uma atualização de fonte: a revisão Cochrane de cell salvage que eu citava era a de 2010
-(RR 0,62, benefício estabelecido). A **atualização de 2023** rebaixa a certeza do agregado para
-**muito baixa** (RR 0,65; 0,59–0,72), com certeza moderada apenas em subgrupos. O grafo agora
-cita a versão vigente.
+**E a readmissão que faltava existe.** Readmissão por complicações até 8 semanas: **51/234 (22%) vs**
+**31/234 (13%), RR 0,61 (0,40–0,91)** — desfecho secundário **pré-especificado**. Readmissões totais
+71 vs 38 (razão de taxas 0,54; 0,34–0,85). Até 6 meses o efeito se atenua: qualquer readmissão
+RR 0,78 (0,58–1,04), não significativo.
+
+As duas coisas são verdadeiras ao mesmo tempo porque estão em **horizontes diferentes**: a janela do
+DAOH-30 fecha aos 30 dias, e o ganho de readmissão acontece entre a alta e as 8 semanas. O grafo agora
+diz isso explicitamente, numa ressalva `HORIZONTE` acoplada ao veredito, em vez de engolir um dos dois.
+
+> **A consequência incômoda:** o horizonte do nó CASA é uma **decisão editorial**, não um dado.
+> Definido em 30 dias, o ferro endovenoso vai para o cemitério. Definido em 8 semanas, ele volta.
+> O PREVENTT é o caso que expõe isso — e é a coisa mais honesta que este grafo tem para mostrar.
+
+### Os outros achados do texto completo do PREVENTT
+
+- Hb no **dia da cirurgia**: diferença média de apenas **+4,7 g/L** (2,7–6,8). Anemia corrigida em
+  21% vs 10% (RR 2,06; 1,27–3,35). A mediana entre randomização e cirurgia foi de **15 dias** — curto
+  demais para o efeito eritropoiético. É a explicação mais provável do resultado nulo, e não a
+  ineficácia do ferro.
+- Hb às **8 semanas +10,7 g/L** (7,8–13,7) e aos **6 meses +7,3 g/L** (3,6–11,1) — ou seja,
+  o ferro funcionou como ferro; só não a tempo da cirurgia.
+- Complicações Clavien-Dindo ≥ III: RR 0,89 (0,52–1,55). Mortalidade 30 d RR 1,01; 6 meses RR 1,19.
+
+## O que já havia mudado na passagem pelos resumos
+
+1. **FIBRES estava errado.** Eu afirmava razão 0,83 (0,72–0,94); o real é **0,96 (0,84–1,09)**,
+   margem <1,2, P=0,50 para superioridade. Veredito segue F2 e fica mais forte.
+2. **WOMAN ganhou a aresta que faltava.** O primário era o composto morte por qualquer causa ou
+   histerectomia, e **não foi reduzido** (RR 0,97; 0,87–1,09).
+3. **ATACAS**: o número de transfusão que eu citava não consta do resumo; trocado pelo total de
+   unidades (4331 vs 7994). **CRASH-3**: números trocados pelos da população com pupilas reativas.
+4. **Cochrane cell salvage**: da versão de 2010 para a **atualização de 2023**, que rebaixa a certeza
+   do agregado de estabelecida para **muito baixa**.
 
 ## Identificação dos estudos
 
-Segundo o **PubMed**. DOIs em link, para puxar o texto completo pela biblioteca do hospital.
+Segundo o **PubMed**. DOIs em link.
 
 | Estudo | n | PMID | Citação | DOI |
 |---|---|---|---|---|
@@ -50,7 +69,7 @@ Segundo o **PubMed**. DOIs em link, para puxar o texto completo pela biblioteca 
 | **TRICS III** | 5243 | [29130845](https://pubmed.ncbi.nlm.nih.gov/29130845/) | N Engl J Med 2017;377:2133-2144 | [10.1056/NEJMoa1711818](https://doi.org/10.1056/NEJMoa1711818) |
 | **FOCUS** | 2016 | [22168590](https://pubmed.ncbi.nlm.nih.gov/22168590/) | N Engl J Med 2011;365:2453-62 | [10.1056/NEJMoa1012452](https://doi.org/10.1056/NEJMoa1012452) |
 | **MINT** | 3504 | [37952133](https://pubmed.ncbi.nlm.nih.gov/37952133/) | N Engl J Med 2023;389:2446-2456 | [10.1056/NEJMoa2307983](https://doi.org/10.1056/NEJMoa2307983) |
-| **PREVENTT** | 487 | [32896294](https://pubmed.ncbi.nlm.nih.gov/32896294/) | Lancet 2020;396:1353-1361 | [10.1016/S0140-6736(20)31539-7](https://doi.org/10.1016/S0140-6736(20)31539-7) |
+| **PREVENTT** 📄 | 487 | [32896294](https://pubmed.ncbi.nlm.nih.gov/32896294/) | Lancet 2020;396:1353-1361 | [10.1016/S0140-6736(20)31539-7](https://doi.org/10.1016/S0140-6736(20)31539-7) |
 | **Revisão Cochrane — cell salvage (atualização 2023)** | 14528 | [37681564](https://pubmed.ncbi.nlm.nih.gov/37681564/) | Cochrane Database Syst Rev 2023;9:CD001888 | [10.1002/14651858.CD001888.pub5](https://doi.org/10.1002/14651858.CD001888.pub5) |
 | **CRASH-2** | 20211 | [20554319](https://pubmed.ncbi.nlm.nih.gov/20554319/) | Lancet 2010;376:23-32 | [10.1016/S0140-6736(10)60835-5](https://doi.org/10.1016/S0140-6736(10)60835-5) |
 | **CRASH-3** | 12737 | [31623894](https://pubmed.ncbi.nlm.nih.gov/31623894/) | Lancet 2019;394:1713-1723 | [10.1016/S0140-6736(19)32233-0](https://doi.org/10.1016/S0140-6736(19)32233-0) |
@@ -62,6 +81,8 @@ Segundo o **PubMed**. DOIs em link, para puxar o texto completo pela biblioteca 
 | **PROPPR** | 680 | [25647203](https://pubmed.ncbi.nlm.nih.gov/25647203/) | JAMA 2015;313:471-82 | [10.1001/jama.2015.12](https://doi.org/10.1001/jama.2015.12) |
 | **Plasma profilático para INR pouco alterado (revisões sistemáticas)** | — | — | Corpo de revisões sistemáticas e estudos observacionais; sem ECR de desfecho duro que sustente a prática. | — |
 
+📄 = texto completo lido, não só o resumo.
+
 ## Arestas MEDIU conferidas
 
 | | Estudo | Desfecho | Tipo | Prim. | Direção | Efeito conferido | IC 95% |
@@ -71,8 +92,6 @@ Segundo o **PubMed**. DOIs em link, para puxar o texto completo pela biblioteca 
 | 🔁 | CRASH-3 | Mortalidade em 28–30 dias | `duro` | sim | `incerto` | 12,5% vs 14,0% — RR 0,89 (pupilas reativas ao início); leve-moderado RR 0,78 | 0,80–1,00 / 0,64–0,95 |
 | 🔁 | FIBRES | Unidades de hemocomponente transfundidas | `substituto` | sim | `nao_inferior` | 16,3 vs 17,0 unidades em 24 h — razão 0,96 | 0,84–1,09 |
 | ✎ | Plasma profilático para INR pouco alterado (revisões sistemáticas) | Perda sanguínea estimada (mL) | `substituto` | sim | `nulo` | sem redução consistente de sangramento | — |
-| ✎ | PREVENTT | Readmissão hospitalar | `duro` | não | `beneficio` | menos readmissões no grupo ferro | — |
-| ✎ | PREVENTT | Hemoglobina pós-operatória | `substituto` | não | `beneficio` | Hb maior em 8 semanas e 6 meses | — |
 | ✅ | ATACAS | Mortalidade em 28–30 dias | `duro` | sim | `nao_inferior` | 16,7% vs 18,1% — RR 0,92 | 0,81–1,05 |
 | ✅ | ATACAS | Convulsão | `adverso` | não | `dano` | 0,7% vs 0,1% | — |
 | ✅ | CRASH-2 | Mortalidade em 28–30 dias | `duro` | sim | `beneficio` | 14,5% vs 16,0% — RR 0,91 | 0,85–0,97 |
@@ -84,7 +103,10 @@ Segundo o **PubMed**. DOIs em link, para puxar o texto completo pela biblioteca 
 | ✅ | PATCH (hemorragia intracerebral) | Morte ou incapacidade funcional | `duro` | sim | `dano` | morte ou dependência (mRS) em 3 meses — OR comum ajustada 2,05 | 1,18–3,56 |
 | ✅ | POISE-3 (braço ácido tranexâmico) | Sangramento maior com significado clínico | `duro` | sim | `beneficio` | 9,1% vs 11,7% — HR 0,76 | 0,67–0,87 |
 | ✅ | POISE-3 (braço ácido tranexâmico) | Composto morte / IAM / AVC / nova diálise | `duro` | sim | `incerto` | 14,2% vs 13,9% — HR 1,02 | 0,92–1,14 |
-| ✅ | PREVENTT | Mortalidade em 28–30 dias | `duro` | sim | `nulo` | 28% vs 29% — RR 1,03 | 0,78–1,37 |
+| ✅ 📄 | PREVENTT | Mortalidade em 28–30 dias | `duro` | sim | `nulo` | morte ou transfusão até 30 dias: 28% vs 29% — RR 1,03 | 0,78–1,37 |
+| ✅ 📄 | PREVENTT | Dias vivo e fora do hospital em 30 dias (DAOH-30) | `duro` | não | `nulo` | 19,8 (DP 7,5) vs 19,7 (DP 7,0) dias — diferença −0,1 | −1,5 a 1,2 |
+| ✅ 📄 | PREVENTT | Readmissão hospitalar | `duro` | não | `beneficio` | readmissão por complicações até 8 semanas: 51/234 (22%) vs 31/234 (13%) — RR 0,61 | 0,40–0,91 |
+| ✅ 📄 | PREVENTT | Hemoglobina pós-operatória | `substituto` | não | `beneficio` | Hb 8 semanas: diferença média +10,7 g/L; 6 meses: +7,3 g/L | 7,8–13,7 / 3,6–11,1 |
 | ✅ | PROCOAG | Unidades de hemocomponente transfundidas | `substituto` | sim | `nulo` | mediana 12 vs 11 U em 24 h — diferença absoluta 0,2 U | −2,99 a 3,33 |
 | ✅ | PROCOAG | Evento tromboembólico | `adverso` | não | `dano` | 35% vs 24% — diferença absoluta 11 pp | 1–21 |
 | ✅ | PROPPR | Mortalidade em 28–30 dias | `duro` | sim | `nulo` | 24 h: 12,7% vs 17,0% (diferença −4,2 pp; −9,6 a 1,1; P=0,12); 30 d: 22,4% vs 26,1% (diferença −3,7 pp; −10,2 a 2,7; P=0,26) | — |
@@ -92,37 +114,20 @@ Segundo o **PubMed**. DOIs em link, para puxar o texto completo pela biblioteca 
 | ✅ | WOMAN | Mortalidade em 28–30 dias | `duro` | sim | `beneficio` | morte por sangramento 1,5% vs 1,9% — RR 0,81 | 0,65–1,00 |
 | ✅ | WOMAN | Morte por qualquer causa ou histerectomia | `duro` | sim | `nulo` | 5,3% vs 5,5% — RR 0,97 | 0,87–1,09 |
 
-## O que ainda falta — precisa do texto completo
+## O que ainda falta
 
-Estas três arestas estão exibidas no grafo com a marca ✎ e **fora da pontuação**:
+- **Plasma profilático para INR pouco alterado (revisões sistemáticas) → Perda sanguínea estimada (mL)** — Sem ensaio único indexado: afirmação apoiada em corpo de revisões, não auditável por resumo. Excluída da pontuação — o que não altera o veredito, já que é substituto.
 
-- **PREVENTT → Readmissão hospitalar** — menos readmissões no grupo ferro. NÃO VERIFICÁVEL no resumo indexado: o resumo do PREVENTT não menciona readmissões. Esta aresta está EXCLUÍDA da pontuação até ser conferida no texto completo — e era o único caminho do ferro EV até CASA.
-- **PREVENTT → Hemoglobina pós-operatória** — Hb maior em 8 semanas e 6 meses. NÃO VERIFICÁVEL no resumo indexado. Substituto de qualquer modo.
-- **Plasma profilático para INR pouco alterado (revisões sistemáticas) → Perda sanguínea estimada (mL)** — sem redução consistente de sangramento. Sem ensaio único indexado: afirmação apoiada em corpo de revisões, não auditável por resumo. Excluída da pontuação — o que não altera o veredito, já que é substituto.
+E três coisas que fonte nenhuma resolve, porque são **suas** decisões, não fatos:
 
-E três coisas que resumo nenhum resolve, e que continuam sendo decisão editorial sua:
-
-1. **Classificar o composto de sangramento do POISE-3 como desfecho `duro`.** É essa decisão que
-   faz o TXA sobreviver para os pacientes P1 e P2. Defensável, mas é uma escolha, não um dado.
-2. **A regra ganho × desescalada.** Aceitar não-inferioridade como vitória para a estratégia
-   restritiva é um julgamento de valor sobre onde está o ganho — não sai de nenhum ensaio.
-3. **As arestas `SUGERE` e `CORRIGE`.** Achado→mecanismo e intervenção→mecanismo são fisiopatologia,
-   não evidência de ensaio. Nenhuma auditoria de PubMed as toca.
+1. **O horizonte do nó CASA.** Hoje 30 dias. É a decisão que manda o ferro EV para o cemitério.
+2. **Classificar o composto de sangramento do POISE-3 como `duro`.** É o que faz o TXA sobreviver.
+3. **A regra ganho × desescalada** e as arestas `SUGERE`/`CORRIGE`, que são fisiopatologia.
 
 ---
 
-Para virar um ✎ depois de ler o artigo:
+Para mudar o horizonte de CASA e ver o ferro voltar:
 
 ```python
-import json, pathlib
-p = pathlib.Path("grafos/hemostasia-pbm.json"); g = json.loads(p.read_text())
-for m in g["mediu"]:
-    if (m["estudo"], m["desfecho"]) == ("PREVENTT", "D_readmissao"):
-        m["verificacao"] = "confirmado"
-        m["auditado"] = True
-        m["efeito"] = "<o valor que você leu no artigo>"
-        m["ic"] = "<IC 95%>"
-p.write_text(json.dumps(g, ensure_ascii=False, indent=2) + "\n")
+# grafos/hemostasia-pbm.json → terminal.horizonte, e a regra F5 em motor_grafo/travessia.py
 ```
-
-Depois: `python3 -m unittest discover -s tests` e `python3 grafos/exportar_palco.py`.

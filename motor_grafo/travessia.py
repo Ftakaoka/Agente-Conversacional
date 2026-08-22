@@ -21,6 +21,7 @@ LAPIDES = {
     "F2": "Mediu desfecho substituto; não há caminho até CASA.",
     "F3": "Mediu desfecho duro e deu nulo (ou pior).",
     "F4": "O custo adverso consome o ganho.",
+    "F5": "Mediu CASA diretamente. CASA não se moveu.",
 }
 
 
@@ -107,6 +108,23 @@ def _julgar(grafo, rota):
         return v
     if rota.elegibilidade.estado == "transferivel":
         v.ressalvas.append(f"Elegibilidade por transferência, não direta: {rota.elegibilidade.motivo}")
+
+    # F5 — o ensaio mediu o próprio nó terminal. Nenhum secundário do mesmo
+    # horizonte sobrepõe uma medida direta de CASA.
+    diretas = [m for m in v.medidas_duras
+               if grafo.desfechos[m["desfecho"]].get("terminal_direto")]
+    if diretas and all(d["direcao"] in ("nulo", "incerto", "dano") for d in diretas):
+        d = diretas[0]
+        v.falhas.append(("F5", f"{estudo['rotulo']} mediu DAOH-30 — o próprio nó CASA — e não moveu: {d['efeito']}"))
+        outros = [m for m in v.medidas_duras
+                  if m is not d and m["direcao"] == "beneficio"]
+        for o in outros:
+            v.ressalvas.append(
+                f"HORIZONTE — há ganho real em {grafo.desfechos[o['desfecho']]['rotulo'].lower()} "
+                f"({o['efeito']}), mas fora da janela de {grafo.terminal['horizonte']} do nó CASA. "
+                f"{grafo.terminal['nota_horizonte']}"
+            )
+        return v
 
     duros_primarios = [m for m in v.medidas_duras if m["primario"]]
     beneficio_primario = [m for m in duros_primarios if m["direcao"] == "beneficio"]

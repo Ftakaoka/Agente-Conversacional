@@ -435,6 +435,6 @@ function render(){
 }
 const a=D.meta.auditoria;
 if(a) document.getElementById('placar').textContent =
-  `${a.confirmado} arestas confirmadas, ${a.corrigido} corrigidas e ${a.nao_no_resumo} sem correspondência no resumo, conferidas no PubMed em ${a.data}.`;
+  `${a.confirmado} arestas confirmadas, ${a.corrigido} corrigidas e ${a.nao_no_resumo} sem correspondência no resumo. Fonte: ${a.fonte}, em ${a.data}.`;
 render();
 </script>

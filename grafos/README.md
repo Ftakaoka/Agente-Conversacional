@@ -43,6 +43,7 @@ Sem essa distinção o grafo mandaria o achado mais sólido do PBM para o cemit�
 | **F2** | `CONTA_PARA` | Mediu desfecho substituto; não há caminho até CASA. |
 | **F3** | `MEDIU` | Mediu desfecho duro e deu nulo (ou pior). |
 | **F4** | `CUSTA` | O custo adverso consome o ganho. |
+| **F5** | `CONTA_PARA` (medida direta) | Mediu CASA diretamente. CASA não se moveu. |
 
 O cemitério não é uma lista curada à mão. É o conjunto de caminhos que quebram,
 e cada quebra tem o nome da aresta que faltou.
@@ -91,8 +92,8 @@ travessia. Se a página mostra algo, o motor produziu aquilo.
 
 ## Estado da evidência
 
-Arestas `MEDIU` conferidas contra os resumos indexados no PubMed em 2026-08-22:
-**18 confirmadas, 4 corrigidas, 3 sem correspondência no resumo.** Cada estudo
+Arestas `MEDIU` conferidas em 2026-08-22 contra os resumos do PubMed, mais o texto completo do
+PREVENTT: **21 confirmadas, 4 corrigidas, 1 sem correspondência no resumo.** Cada estudo
 carrega `pmid` e `doi`. Ver [`AUDITORIA.md`](AUDITORIA.md).
 
 Cada aresta declara seu estado em `verificacao`:
@@ -106,7 +107,15 @@ Cada aresta declara seu estado em `verificacao`:
 O motor descarta as arestas ✎ ao emitir veredito. É isso que torna a auditoria
 mecânica em vez de decorativa: virar um ✎ pode mudar um veredito, e os testes
 acusam. Foi o que aconteceu com o ferro EV, que saiu de condicional e caiu no
-cemitério quando o achado de readmissão do PREVENTT não apareceu no resumo.
+cemitério. Lido o texto completo, ele continua lá — mas por um motivo muito melhor: o
+PREVENTT mediu **DAOH-30, o próprio nó CASA**, e ficou plano (−0,1 dia; −1,5 a 1,2).
+
+## O horizonte de CASA é uma escolha
+
+O ganho de readmissão do ferro EV é real e pré-especificado (RR 0,61; 0,40–0,91), e
+acontece entre a alta e 8 semanas — **fora** da janela de 30 dias do nó terminal. Com
+CASA em 30 dias, o ferro vai para o cemitério; com CASA em 8 semanas, ele volta. O grafo
+diz isso numa ressalva `HORIZONTE` em vez de escolher em silêncio.
 
 O que auditoria de resumo **não** alcança: as arestas `SUGERE` e `CORRIGE` são
 fisiopatologia, não evidência de ensaio; e a classificação de um desfecho como
